@@ -7,7 +7,7 @@ This was inspired by [Command X](https://sindresorhus.com/command-x). I built th
 ## How It Works
 - When Finder is frontmost:
   - `Cmd+X` triggers a copy
-  - The next `Cmd+V` becomes **Move** (Finder	s `Cmd+Option+V`)
+  - The next `Cmd+V` becomes **Move** (Finder\t `Cmd+Option+V`)
 - Normal `Cmd+C` and `Cmd+V` still behave as expected.
 
 ## Permissions
@@ -21,3 +21,7 @@ There is no prebuilt binary yet. Please build manually:
 ## Security
 
 The app is sandboxed and will NOT connect to the internet. It also doesn't have any file access entitlements.
+
+## TODO
+- [ ] Launch at login
+- [ ] Fix file names and search queries in finder not being "cut"

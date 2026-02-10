@@ -1,6 +1,6 @@
+import ApplicationServices
 import Carbon
 import Cocoa
-import ApplicationServices
 
 final class EventTapManager {
     private enum ShortcutKey {
@@ -43,7 +43,11 @@ final class EventTapManager {
 
         let mask = CGEventMask(1 << CGEventType.keyDown.rawValue)
         let callback: CGEventTapCallBack = { _, type, event, userInfo in
-            let manager = Unmanaged<EventTapManager>.fromOpaque(userInfo!).takeUnretainedValue()
+            guard let userInfo else {
+                return Unmanaged.passRetained(event)
+            }
+
+            let manager = Unmanaged<EventTapManager>.fromOpaque(userInfo).takeUnretainedValue()
             switch type {
             case .tapDisabledByTimeout, .tapDisabledByUserInput:
                 manager.reenableEventTap()
@@ -147,12 +151,9 @@ final class EventTapManager {
     }
 
     private func shouldHandleModifier(flags: CGEventFlags) -> Bool {
-        let modeRaw = UserDefaults.standard.string(forKey: ShortcutModifier.storageKey)
-        let mode = ShortcutModifier(storedValue: modeRaw)
-
         let requiredFlag: CGEventFlags
         let disallowedFlags: CGEventFlags
-        switch mode {
+        switch currentModifier {
         case .control:
             requiredFlag = .maskControl
             disallowedFlags = [.maskCommand, .maskAlternate, .maskShift, .maskSecondaryFn]
@@ -166,6 +167,11 @@ final class EventTapManager {
 
         guard flags.contains(requiredFlag) else { return false }
         return flags.intersection(disallowedFlags).isEmpty
+    }
+
+    private var currentModifier: ShortcutModifier {
+        let rawValue = UserDefaults.standard.string(forKey: ShortcutModifier.storageKey)
+        return ShortcutModifier(storedValue: rawValue)
     }
 
     private func isFinderFrontmost() -> Bool {

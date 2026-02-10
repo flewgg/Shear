@@ -1,12 +1,15 @@
-import Cocoa
 import ApplicationServices
+import Cocoa
 import ServiceManagement
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    private enum SettingsURL {
+        static let accessibility = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")
+        static let inputMonitoring = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")
+    }
+
     private let eventTapManager = EventTapManager()
     private let hideDockIconKey = "HideDockIcon"
-    private let accessibilitySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")
-    private let inputMonitoringSettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         applyDockIconVisibility(hidden: isDockIconHidden())
@@ -38,13 +41,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func openAccessibilitySettings() {
-        guard let accessibilitySettingsURL else { return }
-        NSWorkspace.shared.open(accessibilitySettingsURL)
+        openSystemSettings(SettingsURL.accessibility)
     }
 
     func openInputMonitoringSettings() {
-        guard let inputMonitoringSettingsURL else { return }
-        NSWorkspace.shared.open(inputMonitoringSettingsURL)
+        openSystemSettings(SettingsURL.inputMonitoring)
     }
 
     @discardableResult
@@ -79,5 +80,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let policy: NSApplication.ActivationPolicy = hidden ? .accessory : .regular
         guard NSApplication.shared.activationPolicy() != policy else { return }
         NSApplication.shared.setActivationPolicy(policy)
+    }
+
+    private func openSystemSettings(_ url: URL?) {
+        guard let url else { return }
+        NSWorkspace.shared.open(url)
     }
 }

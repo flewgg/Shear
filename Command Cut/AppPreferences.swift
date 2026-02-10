@@ -9,6 +9,10 @@ enum ShortcutModifier: String {
     static let defaultModifier: ShortcutModifier = .control
 
     init(storedValue: String?) {
-        self = ShortcutModifier(rawValue: storedValue ?? "") ?? ShortcutModifier.defaultModifier
+        guard let storedValue, let modifier = ShortcutModifier(rawValue: storedValue) else {
+            self = ShortcutModifier.defaultModifier
+            return
+        }
+        self = modifier
     }
 }

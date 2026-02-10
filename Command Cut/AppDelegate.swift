@@ -5,6 +5,8 @@ import ServiceManagement
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let eventTapManager = EventTapManager()
     private let hideDockIconKey = "HideDockIcon"
+    private let accessibilitySettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")
+    private let inputMonitoringSettingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         applyDockIconVisibility(hidden: isDockIconHidden())
@@ -12,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         requestInputMonitoringAccess()
+        requestAccessibilityAccess()
         eventTapManager.start()
     }
 
@@ -21,26 +24,46 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func openInputMonitoringSettings() {
-        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent") {
-            NSWorkspace.shared.open(url)
-        }
+    func hasInputMonitoringAccess() -> Bool {
+        CGPreflightListenEventAccess()
     }
 
-    func setLaunchAtLogin(_ enabled: Bool) {
+    func requestAccessibilityAccess() {
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+        _ = AXIsProcessTrustedWithOptions(options)
+    }
+
+    func hasAccessibilityAccess() -> Bool {
+        AXIsProcessTrusted()
+    }
+
+    func openAccessibilitySettings() {
+        guard let accessibilitySettingsURL else { return }
+        NSWorkspace.shared.open(accessibilitySettingsURL)
+    }
+
+    func openInputMonitoringSettings() {
+        guard let inputMonitoringSettingsURL else { return }
+        NSWorkspace.shared.open(inputMonitoringSettingsURL)
+    }
+
+    @discardableResult
+    func setLaunchAtLogin(_ enabled: Bool) -> Bool {
         do {
             if enabled {
                 try SMAppService.mainApp.register()
             } else {
                 try SMAppService.mainApp.unregister()
             }
+            return isLaunchAtLoginEnabled() == enabled
         } catch {
             NSLog("Command Cut: failed to update launch at login: %@", error.localizedDescription)
+            return false
         }
     }
 
     func isLaunchAtLoginEnabled() -> Bool {
-        return SMAppService.mainApp.status == .enabled
+        SMAppService.mainApp.status == .enabled
     }
 
     func setDockIconHidden(_ hidden: Bool) {

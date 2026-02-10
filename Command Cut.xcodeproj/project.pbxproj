@@ -12,27 +12,27 @@
 			containerPortal = 73D48C102F34C62A00900695 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 73D48C172F34C62A00900695;
-			remoteInfo = "Command X";
+			remoteInfo = "Command Cut";
 		};
 		73D48C302F34C62B00900695 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 73D48C102F34C62A00900695 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 73D48C172F34C62A00900695;
-			remoteInfo = "Command X";
+			remoteInfo = "Command Cut";
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		73D48C182F34C62A00900695 /* Command X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Command X.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		73D48C252F34C62B00900695 /* Command XTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Command XTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		73D48C2F2F34C62B00900695 /* Command XUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Command XUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73D48C182F34C62A00900695 /* Command Cut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Command Cut.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73D48C252F34C62B00900695 /* Command CutTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Command CutTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73D48C2F2F34C62B00900695 /* Command CutUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Command CutUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		73D48C1A2F34C62A00900695 /* Command X */ = {
+		73D48C1A2F34C62A00900695 /* Command Cut */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Command X";
+			path = "Command Cut";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -65,7 +65,7 @@
 		73D48C0F2F34C62A00900695 = {
 			isa = PBXGroup;
 			children = (
-				73D48C1A2F34C62A00900695 /* Command X */,
+				73D48C1A2F34C62A00900695 /* Command Cut */,
 				73D48C192F34C62A00900695 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,9 +73,9 @@
 		73D48C192F34C62A00900695 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				73D48C182F34C62A00900695 /* Command X.app */,
-				73D48C252F34C62B00900695 /* Command XTests.xctest */,
-				73D48C2F2F34C62B00900695 /* Command XUITests.xctest */,
+				73D48C182F34C62A00900695 /* Command Cut.app */,
+				73D48C252F34C62B00900695 /* Command CutTests.xctest */,
+				73D48C2F2F34C62B00900695 /* Command CutUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,9 +83,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		73D48C172F34C62A00900695 /* Command X */ = {
+		73D48C172F34C62A00900695 /* Command Cut */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 73D48C392F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command X" */;
+			buildConfigurationList = 73D48C392F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command Cut" */;
 			buildPhases = (
 				73D48C142F34C62A00900695 /* Sources */,
 				73D48C152F34C62A00900695 /* Frameworks */,
@@ -96,18 +96,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				73D48C1A2F34C62A00900695 /* Command X */,
+				73D48C1A2F34C62A00900695 /* Command Cut */,
 			);
-			name = "Command X";
+			name = "Command Cut";
 			packageProductDependencies = (
 			);
-			productName = "Command X";
-			productReference = 73D48C182F34C62A00900695 /* Command X.app */;
+			productName = "Command Cut";
+			productReference = 73D48C182F34C62A00900695 /* Command Cut.app */;
 			productType = "com.apple.product-type.application";
 		};
-		73D48C242F34C62B00900695 /* Command XTests */ = {
+		73D48C242F34C62B00900695 /* Command CutTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 73D48C3C2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command XTests" */;
+			buildConfigurationList = 73D48C3C2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command CutTests" */;
 			buildPhases = (
 				73D48C212F34C62B00900695 /* Sources */,
 				73D48C222F34C62B00900695 /* Frameworks */,
@@ -118,16 +118,16 @@
 			dependencies = (
 				73D48C272F34C62B00900695 /* PBXTargetDependency */,
 			);
-			name = "Command XTests";
+			name = "Command CutTests";
 			packageProductDependencies = (
 			);
-			productName = "Command XTests";
-			productReference = 73D48C252F34C62B00900695 /* Command XTests.xctest */;
+			productName = "Command CutTests";
+			productReference = 73D48C252F34C62B00900695 /* Command CutTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		73D48C2E2F34C62B00900695 /* Command XUITests */ = {
+		73D48C2E2F34C62B00900695 /* Command CutUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 73D48C3F2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command XUITests" */;
+			buildConfigurationList = 73D48C3F2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command CutUITests" */;
 			buildPhases = (
 				73D48C2B2F34C62B00900695 /* Sources */,
 				73D48C2C2F34C62B00900695 /* Frameworks */,
@@ -138,11 +138,11 @@
 			dependencies = (
 				73D48C312F34C62B00900695 /* PBXTargetDependency */,
 			);
-			name = "Command XUITests";
+			name = "Command CutUITests";
 			packageProductDependencies = (
 			);
-			productName = "Command XUITests";
-			productReference = 73D48C2F2F34C62B00900695 /* Command XUITests.xctest */;
+			productName = "Command CutUITests";
+			productReference = 73D48C2F2F34C62B00900695 /* Command CutUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -168,7 +168,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 73D48C132F34C62A00900695 /* Build configuration list for PBXProject "Command X" */;
+			buildConfigurationList = 73D48C132F34C62A00900695 /* Build configuration list for PBXProject "Command Cut" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -182,9 +182,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				73D48C172F34C62A00900695 /* Command X */,
-				73D48C242F34C62B00900695 /* Command XTests */,
-				73D48C2E2F34C62B00900695 /* Command XUITests */,
+				73D48C172F34C62A00900695 /* Command Cut */,
+				73D48C242F34C62B00900695 /* Command CutTests */,
+				73D48C2E2F34C62B00900695 /* Command CutUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -240,12 +240,12 @@
 /* Begin PBXTargetDependency section */
 		73D48C272F34C62B00900695 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 73D48C172F34C62A00900695 /* Command X */;
+			target = 73D48C172F34C62A00900695 /* Command Cut */;
 			targetProxy = 73D48C262F34C62B00900695 /* PBXContainerItemProxy */;
 		};
 		73D48C312F34C62B00900695 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 73D48C172F34C62A00900695 /* Command X */;
+			target = 73D48C172F34C62A00900695 /* Command Cut */;
 			targetProxy = 73D48C302F34C62B00900695 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -380,7 +380,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = NDSRQBH7KU;
+				DEVELOPMENT_TEAM = UXDS8WGFWL;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -396,15 +396,15 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Command X";
+				INFOPLIST_KEY_CFBundleDisplayName = "Command Cut";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Command X listens for Cmd+X / Cmd+V when Finder is active.";
+				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Command Cut listens for Cmd+X / Cmd+V when Finder is active.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "volx.Command-X";
+				PRODUCT_BUNDLE_IDENTIFIER = gg.flew.commandcut;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -431,7 +431,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = NDSRQBH7KU;
+				DEVELOPMENT_TEAM = UXDS8WGFWL;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -447,15 +447,15 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Command X";
+				INFOPLIST_KEY_CFBundleDisplayName = "Command Cut";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Command X listens for Cmd+X / Cmd+V when Finder is active.";
+				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Command Cut listens for Cmd+X / Cmd+V when Finder is active.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "volx.Command-X";
+				PRODUCT_BUNDLE_IDENTIFIER = gg.flew.commandcut;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -490,7 +490,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Command X.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Command X";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Command Cut.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Command Cut";
 			};
 			name = Debug;
 		};
@@ -511,7 +511,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Command X.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Command X";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Command Cut.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Command Cut";
 			};
 			name = Release;
 		};
@@ -530,7 +530,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Command X";
+				TEST_TARGET_NAME = "Command Cut";
 			};
 			name = Debug;
 		};
@@ -549,14 +549,14 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Command X";
+				TEST_TARGET_NAME = "Command Cut";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		73D48C132F34C62A00900695 /* Build configuration list for PBXProject "Command X" */ = {
+		73D48C132F34C62A00900695 /* Build configuration list for PBXProject "Command Cut" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				73D48C372F34C62B00900695 /* Debug */,
@@ -565,7 +565,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		73D48C392F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command X" */ = {
+		73D48C392F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command Cut" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				73D48C3A2F34C62B00900695 /* Debug */,
@@ -574,7 +574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		73D48C3C2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command XTests" */ = {
+		73D48C3C2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command CutTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				73D48C3D2F34C62B00900695 /* Debug */,
@@ -583,7 +583,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		73D48C3F2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command XUITests" */ = {
+		73D48C3F2F34C62B00900695 /* Build configuration list for PBXNativeTarget "Command CutUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				73D48C402F34C62B00900695 /* Debug */,

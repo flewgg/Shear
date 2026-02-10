@@ -32,7 +32,7 @@ final class EventTapManager {
             callback: callback,
             userInfo: refcon
         ) else {
-            NSLog("CommandX: failed to create event tap")
+            NSLog("Command Cut: failed to create event tap")
             return
         }
 
@@ -109,7 +109,7 @@ final class EventTapManager {
         guard isCutMode != active else { return }
         isCutMode = active
         NotificationCenter.default.post(
-            name: .commandXCutModeChanged,
+            name: .commandCutModeChanged,
             object: nil,
             userInfo: ["active": active]
         )
@@ -117,5 +117,5 @@ final class EventTapManager {
 }
 
 extension Notification.Name {
-    static let commandXCutModeChanged = Notification.Name("CommandXCutModeChanged")
+    static let commandCutModeChanged = Notification.Name("CommandCutModeChanged")
 }

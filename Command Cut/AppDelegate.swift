@@ -30,7 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 try SMAppService.mainApp.unregister()
             }
         } catch {
-            NSLog("CommandX: failed to update launch at login: %@", error.localizedDescription)
+            NSLog("Command Cut: failed to update launch at login: %@", error.localizedDescription)
         }
     }
 

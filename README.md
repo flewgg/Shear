@@ -1,8 +1,6 @@
-# Command X
+# Command Cut
 
-Command X is a tiny menubar app for macOS that enables **Cut (Cmd+X)** and **Paste (Cmd+V)** in Finder, similar to Windows/Linux.
-
-This was inspired by [Command X](https://sindresorhus.com/command-x). I built this because I didnt want to pay $4 for a stupid simple shortcut remap.
+Command Cut is a tiny menubar app for macOS that enables **Cut (Cmd+X)** and **Paste (Cmd+V)** in Finder, similar to Windows/Linux.
 
 ## How It Works
 - When Finder is frontmost:

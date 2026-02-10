@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct Command_XApp: App {
+struct Command_CutApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @AppStorage("CutShortcutMode") private var shortcutMode = "command"
     @State private var launchAtLogin = false

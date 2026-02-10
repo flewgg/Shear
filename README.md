@@ -1,12 +1,12 @@
 # Command Cut
 
-Command Cut is a tiny menubar app for macOS that enables **Cut (Cmd+X)** and **Paste (Cmd+V)** in Finder, similar to Windows/Linux.
+Command Cut is a tiny menubar app for macOS that enables **Cut (⌘X)** and **Paste (⌘V)** in Finder, similar to Windows/Linux.
 
 ## How It Works
 - When Finder is frontmost:
-  - `Cmd+X` triggers a copy
-  - The next `Cmd+V` becomes **Move** (Finder\t `Cmd+Option+V`)
-- Normal `Cmd+C` and `Cmd+V` still behave as expected.
+  - `⌘X` triggers a copy
+  - The next `⌘V` becomes **Move** (`⌘⌥V`)
+- Normal `⌘C` and `⌘V` still behave as expected.
 
 ## Permissions
 - **Input Monitoring** may be required depending on your macOS version and security settings.
@@ -14,8 +14,8 @@ Command Cut is a tiny menubar app for macOS that enables **Cut (Cmd+X)** and **P
 ## Install (Manual Build)
 There is no prebuilt binary yet. Please build manually:
 1. Install Xcode from the App Store.
-2. Clone this repo and open `Command X.xcodeproj` in Xcode.
-3. Select the `Command X` target and click **Run**.
+2. Clone this repo and open `Command Cut.xcodeproj` in Xcode.
+3. Select the `Command Cut` target and click **Run**.
 4. Grant **Input Monitoring** permission if prompted.
 5. The app runs as a menubar item.
 

@@ -15,9 +15,9 @@ struct SettingsView: View {
                 Text("Modifier Key")
                 Spacer()
                 Picker("Modifier Key", selection: shortcutModeBinding) {
-                    Text("Control (\u{2303})").tag(ShortcutModifier.control.rawValue)
-                    Text("Command (\u{2318})").tag(ShortcutModifier.command.rawValue)
-                    Text("Fn / Globe (\u{1F310})").tag(ShortcutModifier.function.rawValue)
+                    Text("Control (^)").tag(ShortcutModifier.control.rawValue)
+                    Text("Command (⌘)").tag(ShortcutModifier.command.rawValue)
+                    Text("Fn / Globe (􀆪)").tag(ShortcutModifier.function.rawValue)
                 }
                 .labelsHidden()
                 .pickerStyle(.menu)

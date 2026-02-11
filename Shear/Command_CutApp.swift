@@ -13,14 +13,14 @@ struct ShearApp: App {
                 .imageScale(.medium)
         }
 
-        Window("Settings", id: "settings") {
+        Window("Settings", id: AppWindowID.settings) {
             SettingsView(appDelegate: appDelegate)
         }
         .defaultSize(width: 420, height: 320)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
 
-        Window("Info", id: "info") {
+        Window("Info", id: AppWindowID.info) {
             InfoPopupView()
         }
         .defaultSize(width: 320, height: 220)
@@ -33,17 +33,8 @@ private struct MenuBarContent: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        Button {
-            showWindow(id: "settings")
-        } label: {
-            Label("Settings", systemImage: "gearshape")
-        }
-
-        Button {
-            showWindow(id: "info")
-        } label: {
-            Label("Info", systemImage: "info.circle")
-        }
+        windowButton(title: "Settings", systemImage: "gearshape", id: AppWindowID.settings)
+        windowButton(title: "Info", systemImage: "info.circle", id: AppWindowID.info)
 
         Button {
             NSApplication.shared.terminate(nil)
@@ -55,6 +46,14 @@ private struct MenuBarContent: View {
     private func showWindow(id: String) {
         openWindow(id: id)
         NSApplication.shared.activate(ignoringOtherApps: true)
+    }
+
+    private func windowButton(title: String, systemImage: String, id: String) -> some View {
+        Button {
+            showWindow(id: id)
+        } label: {
+            Label(title, systemImage: systemImage)
+        }
     }
 }
 
@@ -95,8 +94,14 @@ private struct InfoPopupView: View {
     }
 
     private var appVersionDisplay: String {
-        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+        Bundle.main.appVersionDisplay
+    }
+}
+
+private extension Bundle {
+    var appVersionDisplay: String {
+        let version = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        let build = object(forInfoDictionaryKey: "CFBundleVersion") as? String
 
         switch (version, build) {
         case let (version?, build?) where version != build:

@@ -12,27 +12,27 @@
 			containerPortal = 73D48C102F34C62A00900695 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 73D48C172F34C62A00900695;
-			remoteInfo = "Shear";
+			remoteInfo = Shear;
 		};
 		73D48C302F34C62B00900695 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 73D48C102F34C62A00900695 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 73D48C172F34C62A00900695;
-			remoteInfo = "Shear";
+			remoteInfo = Shear;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		73D48C182F34C62A00900695 /* Shear.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shear.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		73D48C252F34C62B00900695 /* ShearTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShearTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		73D48C2F2F34C62B00900695 /* ShearUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShearUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		73D48C182F34C62A00900695 /* Shear.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shear.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		73D48C252F34C62B00900695 /* ShearTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShearTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		73D48C2F2F34C62B00900695 /* ShearUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShearUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		73D48C1A2F34C62A00900695 /* Shear */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Shear";
+			path = Shear;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -98,10 +98,10 @@
 			fileSystemSynchronizedGroups = (
 				73D48C1A2F34C62A00900695 /* Shear */,
 			);
-			name = "Shear";
+			name = Shear;
 			packageProductDependencies = (
 			);
-			productName = "Shear";
+			productName = Shear;
 			productReference = 73D48C182F34C62A00900695 /* Shear.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -118,10 +118,10 @@
 			dependencies = (
 				73D48C272F34C62B00900695 /* PBXTargetDependency */,
 			);
-			name = "ShearTests";
+			name = ShearTests;
 			packageProductDependencies = (
 			);
-			productName = "ShearTests";
+			productName = ShearTests;
 			productReference = 73D48C252F34C62B00900695 /* ShearTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -138,10 +138,10 @@
 			dependencies = (
 				73D48C312F34C62B00900695 /* PBXTargetDependency */,
 			);
-			name = "ShearUITests";
+			name = ShearUITests;
 			packageProductDependencies = (
 			);
-			productName = "ShearUITests";
+			productName = ShearUITests;
 			productReference = 73D48C2F2F34C62B00900695 /* ShearUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
@@ -382,7 +382,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = UXDS8WGFWL;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = NDSRQBH7KU;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -398,7 +398,7 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Shear";
+				INFOPLIST_KEY_CFBundleDisplayName = Shear;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Shear listens for your selected shortcut while Finder is active.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -436,7 +436,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = UXDS8WGFWL;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = NDSRQBH7KU;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -452,7 +452,7 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Shear";
+				INFOPLIST_KEY_CFBundleDisplayName = Shear;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Shear listens for your selected shortcut while Finder is active.";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -489,7 +489,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gg.flew.ShearTests";
+				PRODUCT_BUNDLE_IDENTIFIER = gg.flew.ShearTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -510,7 +510,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gg.flew.shearTests";
+				PRODUCT_BUNDLE_IDENTIFIER = gg.flew.shearTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -529,14 +529,14 @@
 				DEVELOPMENT_TEAM = NDSRQBH7KU;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gg.flew.shearUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = gg.flew.shearUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Shear";
+				TEST_TARGET_NAME = Shear;
 			};
 			name = Debug;
 		};
@@ -548,14 +548,14 @@
 				DEVELOPMENT_TEAM = NDSRQBH7KU;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "gg.flew.shearUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = gg.flew.shearUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = "Shear";
+				TEST_TARGET_NAME = Shear;
 			};
 			name = Release;
 		};

@@ -9,7 +9,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private let eventTapManager = EventTapManager()
-    private let hideDockIconKey = "HideDockIcon"
 
     func applicationWillFinishLaunching(_ notification: Notification) {
         applyDockIconVisibility(hidden: isDockIconHidden())
@@ -32,12 +31,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func requestAccessibilityAccess() {
-        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-        _ = AXIsProcessTrustedWithOptions(options)
+        if !CGPreflightPostEventAccess() {
+            _ = CGRequestPostEventAccess()
+        }
     }
 
     func hasAccessibilityAccess() -> Bool {
-        AXIsProcessTrusted()
+        CGPreflightPostEventAccess()
     }
 
     func openAccessibilitySettings() {
@@ -68,12 +68,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func setDockIconHidden(_ hidden: Bool) {
-        UserDefaults.standard.set(hidden, forKey: hideDockIconKey)
+        UserDefaults.standard.set(hidden, forKey: AppDefaultsKey.hideDockIcon)
         applyDockIconVisibility(hidden: hidden)
     }
 
     func isDockIconHidden() -> Bool {
-        UserDefaults.standard.bool(forKey: hideDockIconKey)
+        UserDefaults.standard.bool(forKey: AppDefaultsKey.hideDockIcon)
     }
 
     private func applyDockIconVisibility(hidden: Bool) {

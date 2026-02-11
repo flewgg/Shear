@@ -3,6 +3,11 @@ import Carbon
 import Cocoa
 
 final class EventTapManager {
+    private struct ModifierRule {
+        let required: CGEventFlags
+        let disallowed: CGEventFlags
+    }
+
     private enum ShortcutKey {
         case copy
         case cut
@@ -33,6 +38,11 @@ final class EventTapManager {
     private var retryWorkItem: DispatchWorkItem?
     private let retryDelay: TimeInterval = 2
     private var hasLoggedMissingPermissions = false
+    private static let finderBundleIdentifier = "com.apple.finder"
+
+    deinit {
+        stop()
+    }
 
     func start() {
         guard eventTap == nil else { return }
@@ -44,18 +54,18 @@ final class EventTapManager {
         let mask = CGEventMask(1 << CGEventType.keyDown.rawValue)
         let callback: CGEventTapCallBack = { _, type, event, userInfo in
             guard let userInfo else {
-                return Unmanaged.passRetained(event)
+                return EventTapManager.passThrough(event)
             }
 
             let manager = Unmanaged<EventTapManager>.fromOpaque(userInfo).takeUnretainedValue()
             switch type {
             case .tapDisabledByTimeout, .tapDisabledByUserInput:
                 manager.reenableEventTap()
-                return Unmanaged.passRetained(event)
+                return EventTapManager.passThrough(event)
             case .keyDown:
-                return manager.handle(event: event) ? nil : Unmanaged.passRetained(event)
+                return manager.handle(event: event) ? nil : EventTapManager.passThrough(event)
             default:
-                return Unmanaged.passRetained(event)
+                return EventTapManager.passThrough(event)
             }
         }
 
@@ -83,15 +93,32 @@ final class EventTapManager {
         CGEvent.tapEnable(tap: tap, enable: true)
     }
 
+    func stop() {
+        retryWorkItem?.cancel()
+        retryWorkItem = nil
+
+        if let source = runLoopSource {
+            CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
+            runLoopSource = nil
+        }
+
+        if let tap = eventTap {
+            CFMachPortInvalidate(tap)
+            eventTap = nil
+        }
+
+        isCutMode = false
+    }
+
     private func hasRequiredPermissions() -> Bool {
         let inputMonitoringGranted = CGPreflightListenEventAccess()
-        let accessibilityGranted = AXIsProcessTrusted()
-        if !inputMonitoringGranted || !accessibilityGranted {
+        let eventSynthesisGranted = CGPreflightPostEventAccess()
+        if !inputMonitoringGranted || !eventSynthesisGranted {
             if !hasLoggedMissingPermissions {
                 NSLog(
-                    "Shear: waiting for permissions (Input Monitoring: %@, Accessibility: %@)",
+                    "Shear: waiting for permissions (Input Monitoring: %@, Accessibility/Post Events: %@)",
                     inputMonitoringGranted ? "granted" : "missing",
-                    accessibilityGranted ? "granted" : "missing"
+                    eventSynthesisGranted ? "granted" : "missing"
                 )
                 hasLoggedMissingPermissions = true
             }
@@ -151,22 +178,29 @@ final class EventTapManager {
     }
 
     private func shouldHandleModifier(flags: CGEventFlags) -> Bool {
-        let requiredFlag: CGEventFlags
-        let disallowedFlags: CGEventFlags
-        switch currentModifier {
-        case .control:
-            requiredFlag = .maskControl
-            disallowedFlags = [.maskCommand, .maskAlternate, .maskShift, .maskSecondaryFn]
-        case .command:
-            requiredFlag = .maskCommand
-            disallowedFlags = [.maskControl, .maskAlternate, .maskShift, .maskSecondaryFn]
-        case .function:
-            requiredFlag = .maskSecondaryFn
-            disallowedFlags = [.maskControl, .maskCommand, .maskAlternate, .maskShift]
-        }
+        let rule = modifierRule(for: currentModifier)
+        guard flags.contains(rule.required) else { return false }
+        return flags.intersection(rule.disallowed).isEmpty
+    }
 
-        guard flags.contains(requiredFlag) else { return false }
-        return flags.intersection(disallowedFlags).isEmpty
+    private func modifierRule(for modifier: ShortcutModifier) -> ModifierRule {
+        switch modifier {
+        case .control:
+            return ModifierRule(
+                required: .maskControl,
+                disallowed: [.maskCommand, .maskAlternate, .maskShift, .maskSecondaryFn]
+            )
+        case .command:
+            return ModifierRule(
+                required: .maskCommand,
+                disallowed: [.maskControl, .maskAlternate, .maskShift, .maskSecondaryFn]
+            )
+        case .function:
+            return ModifierRule(
+                required: .maskSecondaryFn,
+                disallowed: [.maskControl, .maskCommand, .maskAlternate, .maskShift]
+            )
+        }
     }
 
     private var currentModifier: ShortcutModifier {
@@ -175,23 +209,38 @@ final class EventTapManager {
     }
 
     private func isFinderFrontmost() -> Bool {
-        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == "com.apple.finder"
+        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == EventTapManager.finderBundleIdentifier
     }
 
     private func postKeyCombo(_ keyCode: Int, flags: CGEventFlags) {
-        let source = CGEventSource(stateID: .combinedSessionState)
-        let keyDown = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(keyCode), keyDown: true)
-        let keyUp = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(keyCode), keyDown: false)
-        keyDown?.flags = flags
-        keyUp?.flags = flags
-        keyDown?.setIntegerValueField(.eventSourceUserData, value: injectedEventTag)
-        keyUp?.setIntegerValueField(.eventSourceUserData, value: injectedEventTag)
-        keyDown?.post(tap: .cgSessionEventTap)
-        keyUp?.post(tap: .cgSessionEventTap)
+        guard let source = CGEventSource(stateID: .combinedSessionState),
+              let keyDown = CGEvent(
+                  keyboardEventSource: source,
+                  virtualKey: CGKeyCode(keyCode),
+                  keyDown: true
+              ),
+              let keyUp = CGEvent(
+                  keyboardEventSource: source,
+                  virtualKey: CGKeyCode(keyCode),
+                  keyDown: false
+              ) else {
+            return
+        }
+
+        keyDown.flags = flags
+        keyUp.flags = flags
+        keyDown.setIntegerValueField(.eventSourceUserData, value: injectedEventTag)
+        keyUp.setIntegerValueField(.eventSourceUserData, value: injectedEventTag)
+        keyDown.post(tap: .cgSessionEventTap)
+        keyUp.post(tap: .cgSessionEventTap)
     }
 
     private func setCutMode(_ active: Bool) {
         guard isCutMode != active else { return }
         isCutMode = active
+    }
+
+    private static func passThrough(_ event: CGEvent) -> Unmanaged<CGEvent> {
+        Unmanaged.passUnretained(event)
     }
 }

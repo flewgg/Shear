@@ -7,7 +7,7 @@ struct SettingsView: View {
     @State private var launchAtLogin = false
     @State private var hideDockIcon = false
     @State private var inputMonitoringGranted = false
-    @State private var accessibilityGranted = false
+    @State private var postEventAccessGranted = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -15,9 +15,9 @@ struct SettingsView: View {
                 Text("Modifier Key")
                 Spacer()
                 Picker("Modifier Key", selection: shortcutModeBinding) {
-                    Text("Control (^)").tag(ShortcutModifier.control.rawValue)
-                    Text("Command (⌘)").tag(ShortcutModifier.command.rawValue)
-                    Text("Fn / Globe (􀆪)").tag(ShortcutModifier.function.rawValue)
+                    ForEach(ShortcutModifier.allCases, id: \.self) { modifier in
+                        Text(modifier.displayName).tag(modifier)
+                    }
                 }
                 .labelsHidden()
                 .pickerStyle(.menu)
@@ -36,9 +36,9 @@ struct SettingsView: View {
             Divider()
 
             permissionRow(
-                title: "Accessibility",
-                granted: accessibilityGranted,
-                details: "Needed to post synthetic key events for move (Option+Command+V)."
+                title: "Accessibility (Post Events)",
+                granted: postEventAccessGranted,
+                details: "Needed to synthesize Option+Command+V for Finder move-paste."
             ) {
                 appDelegate.openAccessibilitySettings()
             }
@@ -59,13 +59,13 @@ struct SettingsView: View {
         }
     }
 
-    private var shortcutModeBinding: Binding<String> {
+    private var shortcutModeBinding: Binding<ShortcutModifier> {
         Binding(
             get: {
-                ShortcutModifier(storedValue: shortcutMode).rawValue
+                ShortcutModifier(storedValue: shortcutMode)
             },
-            set: { newValue in
-                shortcutMode = ShortcutModifier(storedValue: newValue).rawValue
+            set: { modifier in
+                shortcutMode = modifier.rawValue
             }
         )
     }
@@ -85,7 +85,7 @@ struct SettingsView: View {
             get: { hideDockIcon },
             set: { hidden in
                 hideDockIcon = hidden
-                appDelegate.setDockIconHidden(hideDockIcon)
+                appDelegate.setDockIconHidden(hidden)
             }
         )
     }
@@ -128,6 +128,6 @@ struct SettingsView: View {
         launchAtLogin = appDelegate.isLaunchAtLoginEnabled()
         hideDockIcon = appDelegate.isDockIconHidden()
         inputMonitoringGranted = appDelegate.hasInputMonitoringAccess()
-        accessibilityGranted = appDelegate.hasAccessibilityAccess()
+        postEventAccessGranted = appDelegate.hasAccessibilityAccess()
     }
 }

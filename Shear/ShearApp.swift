@@ -54,7 +54,6 @@ private struct MenuBarContent: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        windowButton(title: "Show Onboarding", systemImage: "hand.wave", id: AppWindowID.permissions)
         windowButton(title: "Settings", systemImage: "gearshape", id: AppWindowID.settings)
         windowButton(title: "Info", systemImage: "info.circle", id: AppWindowID.info)
 

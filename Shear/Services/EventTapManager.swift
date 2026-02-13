@@ -3,32 +3,12 @@ import Carbon
 import Cocoa
 
 final class EventTapManager {
-    private struct ModifierRule {
-        let required: CGEventFlags
-        let disallowed: CGEventFlags
-    }
+    private enum ShortcutKey: Int {
+        case copy = 0x08
+        case cut = 0x07
+        case paste = 0x09
 
-    private enum ShortcutKey {
-        case copy
-        case cut
-        case paste
-
-        init?(keyCode: Int) {
-            switch keyCode {
-            case kVK_ANSI_C: self = .copy
-            case kVK_ANSI_X: self = .cut
-            case kVK_ANSI_V: self = .paste
-            default: return nil
-            }
-        }
-
-        var keyCode: Int {
-            switch self {
-            case .copy: return kVK_ANSI_C
-            case .cut: return kVK_ANSI_X
-            case .paste: return kVK_ANSI_V
-            }
-        }
+        var keyCode: Int { rawValue }
     }
 
     private var eventTap: CFMachPort?
@@ -156,7 +136,7 @@ final class EventTapManager {
         let flags = event.flags
         guard shouldHandleModifier(flags: flags) else { return false }
         let keyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
-        guard let key = ShortcutKey(keyCode: keyCode) else { return false }
+        guard let key = ShortcutKey(rawValue: keyCode) else { return false }
 
         let isAutoRepeat = event.getIntegerValueField(.keyboardEventAutorepeat) != 0
         switch key {
@@ -178,25 +158,25 @@ final class EventTapManager {
     }
 
     private func shouldHandleModifier(flags: CGEventFlags) -> Bool {
-        let rule = modifierRule(for: currentModifier)
-        guard flags.contains(rule.required) else { return false }
-        return flags.intersection(rule.disallowed).isEmpty
+        let (required, disallowed) = requiredFlags(for: currentModifier)
+        guard flags.contains(required) else { return false }
+        return flags.intersection(disallowed).isEmpty
     }
 
-    private func modifierRule(for modifier: ShortcutModifier) -> ModifierRule {
+    private func requiredFlags(for modifier: ShortcutModifier) -> (required: CGEventFlags, disallowed: CGEventFlags) {
         switch modifier {
         case .control:
-            return ModifierRule(
+            return (
                 required: .maskControl,
                 disallowed: [.maskCommand, .maskAlternate, .maskShift, .maskSecondaryFn]
             )
         case .command:
-            return ModifierRule(
+            return (
                 required: .maskCommand,
                 disallowed: [.maskControl, .maskAlternate, .maskShift, .maskSecondaryFn]
             )
         case .function:
-            return ModifierRule(
+            return (
                 required: .maskSecondaryFn,
                 disallowed: [.maskControl, .maskCommand, .maskAlternate, .maskShift]
             )
@@ -227,12 +207,11 @@ final class EventTapManager {
             return
         }
 
-        keyDown.flags = flags
-        keyUp.flags = flags
-        keyDown.setIntegerValueField(.eventSourceUserData, value: injectedEventTag)
-        keyUp.setIntegerValueField(.eventSourceUserData, value: injectedEventTag)
-        keyDown.post(tap: .cgSessionEventTap)
-        keyUp.post(tap: .cgSessionEventTap)
+        for event in [keyDown, keyUp] {
+            event.flags = flags
+            event.setIntegerValueField(.eventSourceUserData, value: injectedEventTag)
+            event.post(tap: .cgSessionEventTap)
+        }
     }
 
     private func setCutMode(_ active: Bool) {

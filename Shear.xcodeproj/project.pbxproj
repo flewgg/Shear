@@ -401,7 +401,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Shear;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Shear listens for your selected shortcut while Finder is active.";
+				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Shear listens for your selected shortcut while active.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -456,7 +456,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Shear;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Shear listens for your selected shortcut while Finder is active.";
+				INFOPLIST_KEY_NSInputMonitoringUsageDescription = "Shear listens for your selected shortcut while active.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

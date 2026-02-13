@@ -29,7 +29,7 @@ struct SettingsView: View {
             Toggle("Launch at Startup", isOn: launchAtLoginBinding)
 
             if ShortcutModifier(storedValue: shortcutModeRawValue) == .command {
-                Text("Command mode may override Finder text cut behavior.")
+                Text("Command mode may override text cut behavior in rename fields.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

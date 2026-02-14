@@ -6,7 +6,7 @@ struct ShearApp: App {
 
     var body: some Scene {
         MenuBarExtra {
-            MenuBarContent()
+            MenuBarContent(appDelegate: appDelegate)
         }
         label: {
             MenuBarLabel()
@@ -51,11 +51,24 @@ private struct MenuBarLabel: View {
 }
 
 private struct MenuBarContent: View {
+    private let appDelegate: AppDelegate
     @Environment(\.openWindow) private var openWindow
+
+    init(appDelegate: AppDelegate) {
+        self.appDelegate = appDelegate
+    }
 
     var body: some View {
         windowButton(title: "Settings", systemImage: "gearshape", id: AppWindowID.settings)
         windowButton(title: "Info", systemImage: "info.circle", id: AppWindowID.info)
+
+        if appDelegate.canCheckForUpdates {
+            Button {
+                appDelegate.checkForUpdates()
+            } label: {
+                Label("Check for updates...", systemImage: "arrow.triangle.2.circlepath")
+            }
+        }
 
         Divider()
 

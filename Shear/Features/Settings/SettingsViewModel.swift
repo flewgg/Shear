@@ -31,6 +31,14 @@ final class SettingsViewModel: ObservableObject {
         appDelegate.openSettings(for: permission)
     }
 
+    var canCheckForUpdates: Bool {
+        appDelegate.canCheckForUpdates
+    }
+
+    func checkForUpdates() {
+        appDelegate.checkForUpdates()
+    }
+
     func refreshPermissions() {
         appDelegate.refreshPermissionState()
         refreshFromSystem()

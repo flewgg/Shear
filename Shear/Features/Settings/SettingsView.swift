@@ -28,6 +28,15 @@ struct SettingsView: View {
             Toggle("Hide Dock Icon", isOn: hideDockIconBinding)
             Toggle("Launch at Startup", isOn: launchAtLoginBinding)
 
+            if viewModel.canCheckForUpdates {
+                HStack {
+                    Spacer()
+                    Button("Check for Updates...") {
+                        viewModel.checkForUpdates()
+                    }
+                }
+            }
+
             if ShortcutModifier(storedValue: shortcutModeRawValue) == .command {
                 Text("Command mode may override text cut behavior in rename fields.")
                     .font(.caption)

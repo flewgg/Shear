@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private let eventTapManager = EventTapManager()
+    private lazy var updaterManager = UpdaterManager()
     private var didBecomeActiveObserver: NSObjectProtocol?
 
     func applicationWillFinishLaunching(_ notification: Notification) {
@@ -26,6 +27,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        _ = updaterManager
+
         didBecomeActiveObserver = NotificationCenter.default.addObserver(
             forName: NSApplication.didBecomeActiveNotification,
             object: NSApp,
@@ -116,6 +119,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func isDockIconHidden() -> Bool {
         UserDefaults.standard.bool(forKey: AppDefaultsKey.hideDockIcon)
+    }
+
+    var canCheckForUpdates: Bool {
+        updaterManager.isAvailable
+    }
+
+    func checkForUpdates() {
+        updaterManager.checkForUpdates()
     }
 
     private func applyDockIconVisibility(hidden: Bool) {

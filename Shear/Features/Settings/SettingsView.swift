@@ -2,79 +2,133 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @AppStorage(ShortcutModifier.storageKey) private var shortcutModeRawValue = ShortcutModifier.defaultModifier.rawValue
+    @AppStorage(ShortcutModifier.storageKey) private var shortcutModeRawValue = ShortcutMode.defaultMode.rawValue
+    @AppStorage(ShortcutModifier.multipleStorageKey) private var multipleShortcutRawValue = ShortcutModifier.storageValue(
+        for: ShortcutModifier.defaultMultipleModifiers
+    )
     @StateObject private var viewModel: SettingsViewModel
-    @State private var permissionInfo: PermissionInfo?
 
     init(appDelegate: AppDelegate) {
         _viewModel = StateObject(wrappedValue: SettingsViewModel(appDelegate: appDelegate))
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Text("Modifier Key")
-                Spacer()
-                Picker("Modifier Key", selection: shortcutModeBinding) {
-                    ForEach(ShortcutModifier.allCases, id: \.self) { modifier in
-                        Text(modifier.displayName).tag(modifier)
+        Form {
+            Section {
+                Toggle("Hide Dock Icon", isOn: hideDockIconBinding)
+                Toggle("Launch at Startup", isOn: launchAtLoginBinding)
+            }
+            
+            Section {
+                HStack {
+                    Text("Modifier Key")
+                    Spacer()
+                    Picker("Modifier Key", selection: shortcutModeBinding) {
+                        ForEach(ShortcutMode.allCases, id: \.self) { mode in
+                            Text(mode.displayName).tag(mode)
+                        }
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.segmented)
+                    .frame(width: 170)
+                }
+
+                if shortcutMode == .multiple {
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading){
+                            Text("Accepted Keys")
+                            Text("Choose one or more modifiers that should trigger Shear").font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        HStack(spacing: 12) {
+                            ForEach(ShortcutModifier.multiShortcutDisplayOrder, id: \.self) { modifier in
+                                Toggle(modifier.shortDisplayName, isOn: shortcutModifierBinding(for: modifier))
+                                    .toggleStyle(.checkbox)
+                            }
+                        }
                     }
                 }
-                .labelsHidden()
-                .pickerStyle(.menu)
-                .frame(width: 170)
+            } header:{
+                Text("Behaviour")
             }
-
-            Toggle("Hide Dock Icon", isOn: hideDockIconBinding)
-            Toggle("Launch at Startup", isOn: launchAtLoginBinding)
+           
+            
 
             if viewModel.canCheckForUpdates {
-                HStack {
-                    Spacer()
+                Section("Updates") {
                     Button("Check for Updates...") {
                         viewModel.checkForUpdates()
                     }
                 }
             }
 
-            if ShortcutModifier(storedValue: shortcutModeRawValue) == .command {
-                Text("Command mode may override text cut behavior in rename fields.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            Section {
+                permissionRow(
+                    title: "Accessibility",
+                    subtitle: "Lets Shear send Finder's move-paste shortcut (Option+Command+V) after you trigger cut. Manage in [Accessibility settings...](\(accessibilityURL.absoluteString))",
+                    granted: accessibilityGranted
+                )
 
-            Divider()
-
-            ForEach(AppPermission.allCases, id: \.self) { permission in
-                permissionRow(permission)
-            }
-
-            HStack {
-                Spacer()
-                Button("Refresh Permission Status") {
-                    viewModel.refreshPermissions()
+                permissionRow(
+                    title: "Input Monitoring",
+                    subtitle: "Lets Shear detect your selected shortcut while Finder is active. Manage in [Input Monitoring settings...](\(inputMonitoringURL.absoluteString))",
+                    granted: inputMonitoringGranted
+                )
+            } header: {
+                Text("Permissions")
+            } footer: {
+                HStack {
+                    Spacer()
+                    Button("Refresh", action: viewModel.refreshPermissions)
                 }
             }
         }
+        .formStyle(.grouped)
         .padding(18)
-        .frame(minWidth: 440)
+        .frame(minWidth: 480, minHeight: 420)
         .onAppear(perform: viewModel.refreshPermissions)
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active { viewModel.refreshPermissions() }
         }
-        .alert(item: $permissionInfo) { info in
-            Alert(
-                title: Text("Why this permission is needed"),
-                message: Text(info.details),
-                dismissButton: .default(Text("OK"))
-            )
-        }
     }
 
-    private var shortcutModeBinding: Binding<ShortcutModifier> {
-        rawValueBinding(
-            rawValue: $shortcutModeRawValue,
-            defaultValue: ShortcutModifier.defaultModifier
+    private var shortcutMode: ShortcutMode {
+        ShortcutMode(storedValue: shortcutModeRawValue)
+    }
+
+    private var shortcutModeBinding: Binding<ShortcutMode> {
+        Binding(
+            get: { shortcutMode },
+            set: { shortcutModeRawValue = $0.rawValue }
+        )
+    }
+
+    private var multipleShortcutModifiers: Set<ShortcutModifier> {
+        if shortcutMode == .multiple && shortcutModeRawValue != ShortcutMode.multiple.rawValue {
+            let legacyModifiers = ShortcutModifier.modifiers(storedValue: shortcutModeRawValue)
+            if !legacyModifiers.isEmpty {
+                return legacyModifiers
+            }
+        }
+
+        return ShortcutModifier.modifiers(storedValue: multipleShortcutRawValue)
+    }
+
+    private func shortcutModifierBinding(for modifier: ShortcutModifier) -> Binding<Bool> {
+        Binding(
+            get: {
+                multipleShortcutModifiers.contains(modifier)
+            },
+            set: { isEnabled in
+                var modifiers = multipleShortcutModifiers
+                if isEnabled {
+                    modifiers.insert(modifier)
+                } else {
+                    modifiers.remove(modifier)
+                }
+                multipleShortcutRawValue = ShortcutModifier.storageValue(for: modifiers)
+                shortcutModeRawValue = ShortcutMode.multiple.rawValue
+            }
         )
     }
 
@@ -92,40 +146,44 @@ struct SettingsView: View {
         )
     }
 
-    private func rawValueBinding<Value: RawRepresentable>(
-        rawValue: Binding<String>,
-        defaultValue: Value
-    ) -> Binding<Value> where Value.RawValue == String {
-        Binding(
-            get: { Value(rawValue: rawValue.wrappedValue) ?? defaultValue },
-            set: { rawValue.wrappedValue = $0.rawValue }
-        )
+    private var accessibilityURL: URL {
+        URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
     }
 
-    private func permissionRow(_ permission: AppPermission) -> some View {
-        let granted = permission.isGranted(in: viewModel.permissions)
-        return HStack(spacing: 8) {
-            Image(systemName: granted ? "checkmark.circle.fill" : "xmark.circle.fill")
-                .foregroundStyle(granted ? Color.green : Color.orange)
-            Text(permission.title)
-            Text(granted ? "Granted" : "Missing")
-                .foregroundStyle(.secondary)
-            Button {
-                permissionInfo = PermissionInfo(details: permission.subtitle)
-            } label: {
-                Image(systemName: "info.circle")
+    private var inputMonitoringURL: URL {
+        URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")!
+    }
+
+    private var accessibilityGranted: Bool {
+        viewModel.permissions.postEventAccessGranted
+    }
+
+    private var inputMonitoringGranted: Bool {
+        viewModel.permissions.inputMonitoringGranted
+    }
+
+
+    private func permissionRow(title: String, subtitle: String, granted: Bool) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+
+                Text(.init(subtitle))
+                    .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .buttonStyle(.plain)
-            Spacer()
-            Button("Open System Settings…") {
-                viewModel.openSettings(for: permission)
-            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .layoutPriority(1)
+
+            Text(granted ? "Granted" : "Not Granted")
+                .foregroundStyle(Color(nsColor: granted ? .systemGreen : .systemRed))
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
         }
     }
 }
 
-private struct PermissionInfo: Identifiable {
-    let id = UUID()
-    let details: String
+#Preview {
+    SettingsView(appDelegate: AppDelegate())
 }

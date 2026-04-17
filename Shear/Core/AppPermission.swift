@@ -14,9 +14,9 @@ enum AppPermission: CaseIterable, Hashable {
     var subtitle: String {
         switch self {
         case .inputMonitoring:
-            return "Required to detect your selected shortcut globally."
+            return "Required to detect your selected shortcut while Finder is active."
         case .postEvents:
-            return "Required to send Option+Command+V for cut-paste."
+            return "Required to send Finder's move-paste shortcut (Option+Command+V)."
         }
     }
 

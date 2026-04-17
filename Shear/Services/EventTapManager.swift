@@ -158,9 +158,10 @@ final class EventTapManager {
     }
 
     private func shouldHandleModifier(flags: CGEventFlags) -> Bool {
-        let (required, disallowed) = requiredFlags(for: currentModifier)
-        guard flags.contains(required) else { return false }
-        return flags.intersection(disallowed).isEmpty
+        currentModifiers.contains { modifier in
+            let (required, disallowed) = requiredFlags(for: modifier)
+            return flags.contains(required) && flags.intersection(disallowed).isEmpty
+        }
     }
 
     private func requiredFlags(for modifier: ShortcutModifier) -> (required: CGEventFlags, disallowed: CGEventFlags) {
@@ -183,9 +184,13 @@ final class EventTapManager {
         }
     }
 
-    private var currentModifier: ShortcutModifier {
-        let rawValue = UserDefaults.standard.string(forKey: ShortcutModifier.storageKey)
-        return ShortcutModifier(storedValue: rawValue)
+    private var currentModifiers: Set<ShortcutModifier> {
+        let modeRawValue = UserDefaults.standard.string(forKey: ShortcutModifier.storageKey)
+        let multipleRawValue = UserDefaults.standard.string(forKey: ShortcutModifier.multipleStorageKey)
+        return ShortcutModifier.enabledModifiers(
+            modeStoredValue: modeRawValue,
+            multipleStoredValue: multipleRawValue
+        )
     }
 
     private func isFinderFrontmost() -> Bool {

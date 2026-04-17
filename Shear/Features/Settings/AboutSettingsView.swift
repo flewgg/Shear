@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 private enum AboutContent {
@@ -50,8 +51,9 @@ struct AboutSettingsView: View {
 
     private var header: some View {
         VStack(spacing: 14) {
-            Image("AppIcon")
+            Image(nsImage: NSApplication.shared.applicationIconImage)
                 .resizable()
+                .interpolation(.high)
                 .frame(width: 96, height: 96)
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 

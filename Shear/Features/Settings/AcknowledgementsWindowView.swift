@@ -1,10 +1,5 @@
 import SwiftUI
 
-enum AcknowledgementsWindowLayout {
-    static let width: CGFloat = 720
-    static let height: CGFloat = 640
-}
-
 struct AcknowledgementsWindowView: View {
     private let acknowledgmentsText = AcknowledgmentsDocument.load()
 

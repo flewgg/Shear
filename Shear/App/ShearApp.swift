@@ -37,7 +37,7 @@ struct ShearApp: App {
             AcknowledgementsWindowView()
         }
         .windowToolbarStyle(.unified)
-        .defaultSize(width: AcknowledgementsWindowLayout.width, height: AcknowledgementsWindowLayout.height)
+        .defaultSize(width: 720, height: 640)
     }
 }
 

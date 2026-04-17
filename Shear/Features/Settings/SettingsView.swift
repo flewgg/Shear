@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.openWindow) private var openWindow
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(ShortcutModifier.storageKey) private var shortcutModeRawValue = ShortcutMode.defaultMode.rawValue
     @AppStorage(ShortcutModifier.multipleStorageKey) private var multipleShortcutRawValue = ShortcutModifier.storageValue(
@@ -13,12 +14,37 @@ struct SettingsView: View {
     }
 
     var body: some View {
+        TabView {
+            generalTab
+                .tabItem {
+                    Label("General", systemImage: "gearshape")
+                }
+
+            AboutSettingsView(
+                canCheckForUpdates: viewModel.canCheckForUpdates,
+                onCheckForUpdates: viewModel.checkForUpdates,
+                onOpenAcknowledgements: {
+                    openWindow(id: AppWindowID.acknowledgements)
+                }
+            )
+            .tabItem {
+                Label("About", systemImage: "info.circle")
+            }
+        }
+        .frame(minWidth: 520, minHeight: 470)
+        .onAppear(perform: viewModel.refreshPermissions)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active { viewModel.refreshPermissions() }
+        }
+    }
+
+    private var generalTab: some View {
         Form {
             Section {
                 Toggle("Hide Dock Icon", isOn: hideDockIconBinding)
                 Toggle("Launch at Startup", isOn: launchAtLoginBinding)
             }
-            
+
             Section {
                 HStack {
                     Text("Modifier Key")
@@ -35,9 +61,11 @@ struct SettingsView: View {
 
                 if shortcutMode == .multiple {
                     HStack(alignment: .top) {
-                        VStack(alignment: .leading){
+                        VStack(alignment: .leading, spacing: 2) {
                             Text("Accepted Keys")
-                            Text("Choose one or more modifiers that should trigger Shear").font(.caption).foregroundStyle(.secondary)
+                            Text("Choose one or more modifiers that should trigger Shear.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                         Spacer()
                         HStack(spacing: 12) {
@@ -48,18 +76,8 @@ struct SettingsView: View {
                         }
                     }
                 }
-            } header:{
+            } header: {
                 Text("Behaviour")
-            }
-           
-            
-
-            if viewModel.canCheckForUpdates {
-                Section("Updates") {
-                    Button("Check for Updates...") {
-                        viewModel.checkForUpdates()
-                    }
-                }
             }
 
             Section {
@@ -85,11 +103,6 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .padding(18)
-        .frame(minWidth: 480, minHeight: 420)
-        .onAppear(perform: viewModel.refreshPermissions)
-        .onChange(of: scenePhase) { _, newPhase in
-            if newPhase == .active { viewModel.refreshPermissions() }
-        }
     }
 
     private var shortcutMode: ShortcutMode {
@@ -161,8 +174,6 @@ struct SettingsView: View {
     private var inputMonitoringGranted: Bool {
         viewModel.permissions.inputMonitoringGranted
     }
-
-
     private func permissionRow(title: String, subtitle: String, granted: Bool) -> some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {

@@ -11,6 +11,8 @@ brew install --cask flewgg/tap/shear
 
 Or download [directly from GitHub](https://github.com/flewgg/Shear/releases/latest).
 
+Automatic update checks are powered by [Sparkle](https://github.com/sparkle-project/Sparkle).
+
 
 ## How It Works
 - When Finder is frontmost:
@@ -27,3 +29,7 @@ Or download [directly from GitHub](https://github.com/flewgg/Shear/releases/late
 ## Security
 
 The app is sandboxed and does not request file access entitlements.
+
+## Acknowledgements
+
+Shear uses [Sparkle](https://github.com/sparkle-project/Sparkle) for app updates. The About tab includes an acknowledgements window with Sparkle's license.

@@ -11,8 +11,6 @@ brew install --cask flewgg/tap/shear
 
 Or download [directly from GitHub](https://github.com/flewgg/Shear/releases/latest).
 
-Automatic update checks are powered by [Sparkle](https://github.com/sparkle-project/Sparkle), and preference storage uses [Defaults](https://github.com/sindresorhus/Defaults).
-
 
 ## How It Works
 - When Finder is frontmost:

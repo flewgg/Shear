@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		48E691872F40C78600FA2402 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 48E691862F40C78600FA2402 /* Sparkle */; };
+		7306F66D2F92237900E76115 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 7306F66C2F92237900E76115 /* Defaults */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7306F66D2F92237900E76115 /* Defaults in Frameworks */,
 				48E691872F40C78600FA2402 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -119,6 +121,7 @@
 			name = Shear;
 			packageProductDependencies = (
 				48E691862F40C78600FA2402 /* Sparkle */,
+				7306F66C2F92237900E76115 /* Defaults */,
 			);
 			productName = Shear;
 			productReference = 73D48C182F34C62A00900695 /* Shear.app */;
@@ -198,6 +201,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				48E691852F40C78600FA2402 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				7306F66B2F92237900E76115 /* XCRemoteSwiftPackageReference "Defaults" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 73D48C192F34C62A00900695 /* Products */;
@@ -647,6 +651,14 @@
 				minimumVersion = 2.8.1;
 			};
 		};
+		7306F66B2F92237900E76115 /* XCRemoteSwiftPackageReference "Defaults" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/Defaults";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.8;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -654,6 +666,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 48E691852F40C78600FA2402 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		7306F66C2F92237900E76115 /* Defaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7306F66B2F92237900E76115 /* XCRemoteSwiftPackageReference "Defaults" */;
+			productName = Defaults;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

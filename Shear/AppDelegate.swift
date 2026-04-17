@@ -1,5 +1,6 @@
 import ApplicationServices
 import Cocoa
+import Defaults
 import ServiceManagement
 
 @MainActor
@@ -13,17 +14,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private enum SettingsURL {
-        static let accessibility = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
-        static let inputMonitoring = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")!
-    }
-
     private let eventTapManager = EventTapManager()
     private lazy var updaterManager = UpdaterManager()
     private var didBecomeActiveObserver: NSObjectProtocol?
 
     func applicationWillFinishLaunching(_ notification: Notification) {
-        applyDockIconVisibility(hidden: isDockIconHidden())
+        applyDockIconVisibility(hidden: Defaults[.hideDockIcon])
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -39,13 +35,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        refreshPermissionState()
+        let currentPermissionState = refreshPermissionState()
 
-        let defaults = UserDefaults.standard
-        let hasShownOnboarding = defaults.bool(forKey: AppDefaultsKey.hasShownPermissionsOnboarding)
-        if !hasShownOnboarding {
-            defaults.set(true, forKey: AppDefaultsKey.hasShownPermissionsOnboarding)
-            if !permissionState().allRequiredGranted {
+        if !Defaults[.hasShownPermissionsOnboarding] {
+            Defaults[.hasShownPermissionsOnboarding] = true
+            if !currentPermissionState.allRequiredGranted {
                 DispatchQueue.main.async {
                     AppWindowRouter.open(id: AppWindowID.permissions)
                 }
@@ -75,22 +69,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
     }
 
-    func refreshPermissionState() {
-        if permissionState().allRequiredGranted {
+    @discardableResult
+    func refreshPermissionState() -> PermissionState {
+        let state = permissionState()
+
+        if state.allRequiredGranted {
             eventTapManager.start()
         } else {
             eventTapManager.stop()
             eventTapManager.start()
         }
+
+        return state
     }
 
     func openSettings(for permission: AppPermission) {
-        switch permission {
-        case .inputMonitoring:
-            openSystemSettings(SettingsURL.inputMonitoring)
-        case .postEvents:
-            openSystemSettings(SettingsURL.accessibility)
-        }
+        openSystemSettings(permission.settingsURL)
     }
 
     @discardableResult
@@ -113,12 +107,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func setDockIconHidden(_ hidden: Bool) {
-        UserDefaults.standard.set(hidden, forKey: AppDefaultsKey.hideDockIcon)
+        Defaults[.hideDockIcon] = hidden
         applyDockIconVisibility(hidden: hidden)
     }
 
     func isDockIconHidden() -> Bool {
-        UserDefaults.standard.bool(forKey: AppDefaultsKey.hideDockIcon)
+        Defaults[.hideDockIcon]
     }
 
     var canCheckForUpdates: Bool {

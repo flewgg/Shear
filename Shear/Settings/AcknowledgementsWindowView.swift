@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AcknowledgementsWindowView: View {
-    private let acknowledgmentsText = AcknowledgmentsDocument.load()
+    private let acknowledgmentsText = loadAcknowledgementsText()
 
     var body: some View {
         ScrollView {
@@ -20,25 +20,23 @@ struct AcknowledgementsWindowView: View {
     }
 }
 
-private enum AcknowledgmentsDocument {
-    private static let resourceName = "Acknowledgments"
-    private static let resourceExtension = "txt"
+private func loadAcknowledgementsText() -> String {
+    let resourceName = "Acknowledgments"
+    let resourceExtension = "txt"
+    let bundles = [Bundle.main, Bundle(for: BundleAnchor.self)]
 
-    static func load() -> String {
-        let bundles = [Bundle.main, Bundle(for: BundleAnchor.self)]
-
-        for bundle in bundles {
-            guard let url = bundle.url(forResource: resourceName, withExtension: resourceExtension),
-                  let text = try? String(contentsOf: url, encoding: .utf8) else {
-                continue
-            }
-            return text
+    for bundle in bundles {
+        guard let url = bundle.url(forResource: resourceName, withExtension: resourceExtension),
+              let text = try? String(contentsOf: url, encoding: .utf8) else {
+            continue
         }
 
-        return """
-        Acknowledgments are unavailable because \(resourceName).\(resourceExtension) could not be loaded from the app bundle.
-        """
+        return text
     }
+
+    return """
+    Acknowledgments are unavailable because \(resourceName).\(resourceExtension) could not be loaded from the app bundle.
+    """
 }
 
 private final class BundleAnchor {}

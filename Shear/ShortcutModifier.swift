@@ -3,11 +3,7 @@ enum ShortcutModifier: String, CaseIterable {
     case command
     case function
 
-    static let storageKey = "CutShortcutMode"
-    static let multipleStorageKey = "CutShortcutModes"
-    static let defaultModifier: ShortcutModifier = .control
     static let defaultMultipleModifiers = Set(ShortcutModifier.allCases)
-
     static let multiShortcutDisplayOrder: [ShortcutModifier] = [.control, .function, .command]
 
     var displayName: String {
@@ -21,20 +17,9 @@ enum ShortcutModifier: String, CaseIterable {
         }
     }
 
-    var shortDisplayName: String {
-        switch self {
-        case .control:
-            return "Ctrl"
-        case .command:
-            return "⌘"
-        case .function:
-            return "Fn"
-        }
-    }
-
     init(storedValue: String?) {
         guard let storedValue, let modifier = ShortcutModifier(rawValue: storedValue) else {
-            self = ShortcutModifier.defaultModifier
+            self = .control
             return
         }
         self = modifier
@@ -80,7 +65,7 @@ enum ShortcutModifier: String, CaseIterable {
     }
 
     static func storageValue(for modifiers: Set<ShortcutModifier>) -> String {
-        return allCases
+        allCases
             .filter { modifiers.contains($0) }
             .map(\.rawValue)
             .joined(separator: ",")

@@ -28,10 +28,6 @@ extension Bundle {
         }
     }
 
-    var versionWithBuild: String {
-        appVersionDisplay
-    }
-
     var copyright: String {
         object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String
             ?? "© \(Calendar.current.component(.year, from: Date())) flew. All rights reserved."

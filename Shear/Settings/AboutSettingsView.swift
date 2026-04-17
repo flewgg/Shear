@@ -1,26 +1,6 @@
 import AppKit
 import SwiftUI
 
-private enum AboutContent {
-    static let repositoryURL = URL(string: "https://github.com/flewgg/Shear")!
-    static let releasesURL = URL(string: "https://github.com/flewgg/Shear/releases")!
-    static let feedbackURL = URL(string: "https://github.com/flewgg/Shear/issues")!
-    static let contactURL = URL(string: "mailto:contact@flew.gg")!
-
-    static let links: [LinkItem] = [
-        .init(title: "Release Notes", label: "github.com/flewgg/Shear/releases", destination: releasesURL),
-        .init(title: "Repository", label: "github.com/flewgg/Shear", destination: repositoryURL),
-        .init(title: "Contact", label: "contact@flew.gg", destination: contactURL)
-    ]
-}
-
-private struct LinkItem: Identifiable {
-    let id = UUID()
-    let title: String
-    let label: String
-    let destination: URL
-}
-
 @MainActor
 struct AboutSettingsView: View {
     let canCheckForUpdates: Bool
@@ -61,7 +41,7 @@ struct AboutSettingsView: View {
                 Text(Bundle.main.appName)
                     .font(.title.weight(.semibold))
 
-                Text("Version \(Bundle.main.versionWithBuild)")
+                Text("Version \(Bundle.main.appVersionDisplay)")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
@@ -72,7 +52,7 @@ struct AboutSettingsView: View {
                         .buttonStyle(.bordered)
                 }
 
-                Link("Send Feedback", destination: AboutContent.feedbackURL)
+                Link("Send Feedback", destination: URL(string: "https://github.com/flewgg/Shear/issues")!)
                     .buttonStyle(.bordered)
             }
             .padding(.top, 12)
@@ -83,10 +63,22 @@ struct AboutSettingsView: View {
     private var infoForm: some View {
         Form {
             Section {
-                ForEach(AboutContent.links) { item in
-                    LabeledContent(item.title) {
-                        Link(item.label, destination: item.destination)
-                    }
+                LabeledContent("Release Notes") {
+                    Link(
+                        "github.com/flewgg/Shear/releases",
+                        destination: URL(string: "https://github.com/flewgg/Shear/releases")!
+                    )
+                }
+
+                LabeledContent("Repository") {
+                    Link(
+                        "github.com/flewgg/Shear",
+                        destination: URL(string: "https://github.com/flewgg/Shear")!
+                    )
+                }
+
+                LabeledContent("Contact") {
+                    Link("contact@flew.gg", destination: URL(string: "mailto:contact@flew.gg")!)
                 }
             }
         }
@@ -117,8 +109,7 @@ struct AboutSettingsView: View {
 #Preview {
     AboutSettingsView(
         canCheckForUpdates: true,
-        onCheckForUpdates: {},
-        onOpenAcknowledgements: {}
+        onCheckForUpdates: {}
     )
         .frame(width: 520, height: 470)
 }

@@ -41,6 +41,11 @@ struct ShearApp: App {
     }
 }
 
+private func openAndActivateWindow(_ openWindow: OpenWindowAction, id: String) {
+    openWindow(id: id)
+    NSApplication.shared.activate(ignoringOtherApps: true)
+}
+
 private struct MenuBarLabel: View {
     @Environment(\.openWindow) private var openWindow
 
@@ -49,20 +54,15 @@ private struct MenuBarLabel: View {
             .imageScale(.medium)
             .onAppear {
                 AppWindowRouter.install { id in
-                    openWindow(id: id)
-                    NSApplication.shared.activate(ignoringOtherApps: true)
+                    openAndActivateWindow(openWindow, id: id)
                 }
             }
     }
 }
 
 private struct MenuBarContent: View {
-    private let appDelegate: AppDelegate
+    let appDelegate: AppDelegate
     @Environment(\.openWindow) private var openWindow
-
-    init(appDelegate: AppDelegate) {
-        self.appDelegate = appDelegate
-    }
 
     var body: some View {
         windowButton(title: "Settings", systemImage: "gearshape", id: AppWindowID.settings)
@@ -85,14 +85,9 @@ private struct MenuBarContent: View {
         }
     }
 
-    private func showWindow(id: String) {
-        openWindow(id: id)
-        NSApplication.shared.activate(ignoringOtherApps: true)
-    }
-
     private func windowButton(title: String, systemImage: String, id: String) -> some View {
         Button {
-            showWindow(id: id)
+            openAndActivateWindow(openWindow, id: id)
         } label: {
             Label(title, systemImage: systemImage)
         }
@@ -100,20 +95,17 @@ private struct MenuBarContent: View {
 }
 
 private struct InfoPopupView: View {
-    private let repositoryURL = URL(string: "https://github.com/flewgg/Shear")!
-    private let creditsURL = URL(string: "https://github.com/flewgg")!
-
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Shear")
                 .font(.headline)
 
-            Text("Version \(appVersionDisplay)")
+            Text("Version \(Bundle.main.appVersionDisplay)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            Link("GitHub Repository", destination: repositoryURL)
-            
+            Link("GitHub Repository", destination: URL(string: "https://github.com/flewgg/Shear")!)
+
             Divider()
 
             HStack(spacing: 10) {
@@ -125,7 +117,7 @@ private struct InfoPopupView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("flew")
-                    Link("github.com/flewgg", destination: creditsURL)
+                    Link("github.com/flewgg", destination: URL(string: "https://github.com/flewgg")!)
                         .font(.caption)
                 }
                 Spacer()
@@ -133,9 +125,5 @@ private struct InfoPopupView: View {
         }
         .padding(16)
         .frame(minWidth: 220)
-    }
-
-    private var appVersionDisplay: String {
-        Bundle.main.appVersionDisplay
     }
 }

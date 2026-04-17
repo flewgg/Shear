@@ -11,7 +11,7 @@ brew install --cask flewgg/tap/shear
 
 Or download [directly from GitHub](https://github.com/flewgg/Shear/releases/latest).
 
-Automatic update checks are powered by [Sparkle](https://github.com/sparkle-project/Sparkle).
+Automatic update checks are powered by [Sparkle](https://github.com/sparkle-project/Sparkle), and preference storage uses [Defaults](https://github.com/sindresorhus/Defaults).
 
 
 ## How It Works
@@ -32,4 +32,4 @@ The app is sandboxed and does not request file access entitlements.
 
 ## Acknowledgements
 
-Shear uses [Sparkle](https://github.com/sparkle-project/Sparkle) for app updates. The About tab includes an acknowledgements window with Sparkle's license.
+Shear uses [Sparkle](https://github.com/sparkle-project/Sparkle) for app updates and [Defaults](https://github.com/sindresorhus/Defaults) for preference storage. The About tab includes an acknowledgements window with both licenses.

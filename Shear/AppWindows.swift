@@ -1,3 +1,10 @@
+enum AppWindowID {
+    static let permissions = "permissions"
+    static let settings = "settings"
+    static let info = "info"
+    static let acknowledgements = "acknowledgements"
+}
+
 @MainActor
 enum AppWindowRouter {
     private static var openWindowHandler: ((String) -> Void)?

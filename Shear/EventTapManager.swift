@@ -1,6 +1,7 @@
 import ApplicationServices
 import Carbon
 import Cocoa
+import Defaults
 
 final class EventTapManager {
     private enum ShortcutKey: Int {
@@ -18,7 +19,6 @@ final class EventTapManager {
     private var retryWorkItem: DispatchWorkItem?
     private let retryDelay: TimeInterval = 2
     private var hasLoggedMissingPermissions = false
-    private static let finderBundleIdentifier = "com.apple.finder"
 
     deinit {
         stop()
@@ -185,16 +185,14 @@ final class EventTapManager {
     }
 
     private var currentModifiers: Set<ShortcutModifier> {
-        let modeRawValue = UserDefaults.standard.string(forKey: ShortcutModifier.storageKey)
-        let multipleRawValue = UserDefaults.standard.string(forKey: ShortcutModifier.multipleStorageKey)
         return ShortcutModifier.enabledModifiers(
-            modeStoredValue: modeRawValue,
-            multipleStoredValue: multipleRawValue
+            modeStoredValue: Defaults[.shortcutModeRawValue],
+            multipleStoredValue: Defaults[.multipleShortcutRawValue]
         )
     }
 
     private func isFinderFrontmost() -> Bool {
-        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == EventTapManager.finderBundleIdentifier
+        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == "com.apple.finder"
     }
 
     private func postKeyCombo(_ keyCode: Int, flags: CGEventFlags) {

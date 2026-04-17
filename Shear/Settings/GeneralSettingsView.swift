@@ -1,11 +1,10 @@
+import Defaults
 import SwiftUI
 
 struct GeneralSettingsView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @AppStorage(ShortcutModifier.storageKey) private var shortcutModeRawValue = ShortcutMode.defaultMode.rawValue
-    @AppStorage(ShortcutModifier.multipleStorageKey) private var multipleShortcutRawValue = ShortcutModifier.storageValue(
-        for: ShortcutModifier.defaultMultipleModifiers
-    )
+    @Default(.shortcutModeRawValue) private var shortcutModeRawValue
+    @Default(.multipleShortcutRawValue) private var multipleShortcutRawValue
     @State private var launchAtLogin = false
     @State private var hideDockIcon = false
     @State private var permissions = AppDelegate.PermissionState(
@@ -50,7 +49,7 @@ struct GeneralSettingsView: View {
                         Spacer()
                         HStack(spacing: 12) {
                             ForEach(ShortcutModifier.multiShortcutDisplayOrder, id: \.self) { modifier in
-                                Toggle(modifier.shortDisplayName, isOn: shortcutModifierBinding(for: modifier))
+                                Toggle(modifier.displayName, isOn: shortcutModifierBinding(for: modifier))
                                     .toggleStyle(.checkbox)
                             }
                         }
@@ -61,23 +60,15 @@ struct GeneralSettingsView: View {
             }
 
             Section {
-                permissionRow(
-                    title: "Accessibility",
-                    subtitle: "Lets Shear send Finder's move-paste shortcut (Option+Command+V) after you trigger cut. Manage in [Accessibility settings...](\(accessibilityURL.absoluteString))",
-                    granted: accessibilityGranted
-                )
-
-                permissionRow(
-                    title: "Input Monitoring",
-                    subtitle: "Lets Shear detect your selected shortcut while Finder is active. Manage in [Input Monitoring settings...](\(inputMonitoringURL.absoluteString))",
-                    granted: inputMonitoringGranted
-                )
+                ForEach([AppPermission.postEvents, .inputMonitoring], id: \.self) { permission in
+                    permissionRow(for: permission)
+                }
             } header: {
                 Text("Permissions")
             } footer: {
                 HStack {
                     Spacer()
-                    Button("Refresh", action: refreshPermissions)
+                    Button("Refresh", action: refreshFromSystem)
                 }
             }
         }
@@ -85,7 +76,7 @@ struct GeneralSettingsView: View {
         .onAppear(perform: refreshFromSystem)
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
-                refreshPermissions()
+                refreshFromSystem()
             }
         }
     }
@@ -150,39 +141,18 @@ struct GeneralSettingsView: View {
         )
     }
 
-    private var accessibilityURL: URL {
-        URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!
-    }
-
-    private var inputMonitoringURL: URL {
-        URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")!
-    }
-
-    private var accessibilityGranted: Bool {
-        permissions.postEventAccessGranted
-    }
-
-    private var inputMonitoringGranted: Bool {
-        permissions.inputMonitoringGranted
-    }
-
     private func refreshFromSystem() {
         launchAtLogin = appDelegate.isLaunchAtLoginEnabled()
         hideDockIcon = appDelegate.isDockIconHidden()
-        permissions = appDelegate.permissionState()
+        permissions = appDelegate.refreshPermissionState()
     }
 
-    private func refreshPermissions() {
-        appDelegate.refreshPermissionState()
-        refreshFromSystem()
-    }
-
-    private func permissionRow(title: String, subtitle: String, granted: Bool) -> some View {
+    private func permissionRow(for permission: AppPermission) -> some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(title)
+                Text(permission.title)
 
-                Text(.init(subtitle))
+                Text(.init(permission.settingsDescription))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -190,8 +160,12 @@ struct GeneralSettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .layoutPriority(1)
 
-            Text(granted ? "Granted" : "Not Granted")
-                .foregroundStyle(Color(nsColor: granted ? .systemGreen : .systemRed))
+            Text(permission.isGranted(in: permissions) ? "Granted" : "Not Granted")
+                .foregroundStyle(
+                    Color(
+                        nsColor: permission.isGranted(in: permissions) ? .systemGreen : .systemRed
+                    )
+                )
                 .lineLimit(1)
                 .fixedSize(horizontal: true, vertical: false)
         }

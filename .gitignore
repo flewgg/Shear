@@ -1,6 +1,15 @@
 # Xcode user-specific data
 *.xcuserstate
 **/xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+*.moved-aside
+*.xcresult
+DerivedData/
 
 # macOS
 .DS_Store
+
+# Swift Package Manager
+.build/
+.swiftpm/

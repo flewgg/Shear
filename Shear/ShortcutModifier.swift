@@ -56,11 +56,6 @@ struct ShortcutPreferences {
     }
 
     var multipleSelection: Set<ShortcutModifier> {
-        let legacySelection = legacyMultipleSelection
-        if !legacySelection.isEmpty {
-            return legacySelection
-        }
-
         return ShortcutModifier.modifiers(storedValue: multipleStoredValue)
     }
 
@@ -79,15 +74,6 @@ struct ShortcutPreferences {
 
             return multipleSelection
         }
-    }
-
-    private var legacyMultipleSelection: Set<ShortcutModifier> {
-        guard mode == .multiple,
-              modeStoredValue != ShortcutMode.multiple.rawValue else {
-            return []
-        }
-
-        return ShortcutModifier.modifiers(storedValue: modeStoredValue)
     }
 }
 
@@ -118,7 +104,7 @@ enum ShortcutMode: String, CaseIterable {
             return
         }
 
-        if storedValue == ShortcutMode.multiple.rawValue || storedValue.contains(",") {
+        if storedValue == ShortcutMode.multiple.rawValue {
             self = .multiple
             return
         }

@@ -12,26 +12,32 @@ struct ShearApp: App {
             MenuBarLabel()
         }
 
-        Window("Permissions Required", id: AppWindowID.permissions) {
+        Window("Permissions Required", id: AppWindowID.permissions.rawValue) {
             PermissionsOnboardingView(appDelegate: appDelegate)
         }
         .defaultSize(width: 520, height: 350)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
 
-        Window("Settings", id: AppWindowID.settings) {
+        Window("Settings", id: AppWindowID.settings.rawValue) {
             SettingsView(appDelegate: appDelegate)
         }
-        .defaultSize(width: 420, height: 320)
+        .defaultSize(width: 520, height: 470)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
 
-        Window("Info", id: AppWindowID.info) {
+        Window("Info", id: AppWindowID.info.rawValue) {
             InfoPopupView()
         }
         .defaultSize(width: 320, height: 220)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
+
+        Window("Acknowledgements", id: AppWindowID.acknowledgements.rawValue) {
+            AcknowledgementsWindowView()
+        }
+        .windowToolbarStyle(.unified)
+        .defaultSize(width: 720, height: 640)
     }
 }
 
@@ -42,21 +48,14 @@ private struct MenuBarLabel: View {
         Image(systemName: "scissors.badge.ellipsis")
             .imageScale(.medium)
             .onAppear {
-                AppWindowRouter.install { id in
-                    openWindow(id: id)
-                    NSApplication.shared.activate(ignoringOtherApps: true)
-                }
+                AppWindowRouter.install(openWindow: openWindow)
             }
     }
 }
 
 private struct MenuBarContent: View {
-    private let appDelegate: AppDelegate
+    let appDelegate: AppDelegate
     @Environment(\.openWindow) private var openWindow
-
-    init(appDelegate: AppDelegate) {
-        self.appDelegate = appDelegate
-    }
 
     var body: some View {
         windowButton(title: "Settings", systemImage: "gearshape", id: AppWindowID.settings)
@@ -79,14 +78,9 @@ private struct MenuBarContent: View {
         }
     }
 
-    private func showWindow(id: String) {
-        openWindow(id: id)
-        NSApplication.shared.activate(ignoringOtherApps: true)
-    }
-
-    private func windowButton(title: String, systemImage: String, id: String) -> some View {
+    private func windowButton(title: String, systemImage: String, id: AppWindowID) -> some View {
         Button {
-            showWindow(id: id)
+            openWindow.openAndActivate(id: id)
         } label: {
             Label(title, systemImage: systemImage)
         }
@@ -94,20 +88,17 @@ private struct MenuBarContent: View {
 }
 
 private struct InfoPopupView: View {
-    private let repositoryURL = URL(string: "https://github.com/flewgg/Shear")!
-    private let creditsURL = URL(string: "https://github.com/flewgg")!
-
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Shear")
                 .font(.headline)
 
-            Text("Version \(appVersionDisplay)")
+            Text("Version \(Bundle.main.appVersionDisplay)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
-            Link("GitHub Repository", destination: repositoryURL)
-            
+            Link("GitHub Repository", destination: URL(string: "https://github.com/flewgg/Shear")!)
+
             Divider()
 
             HStack(spacing: 10) {
@@ -119,7 +110,7 @@ private struct InfoPopupView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("flew")
-                    Link("github.com/flewgg", destination: creditsURL)
+                    Link("github.com/flewgg", destination: URL(string: "https://github.com/flewgg")!)
                         .font(.caption)
                 }
                 Spacer()
@@ -127,27 +118,5 @@ private struct InfoPopupView: View {
         }
         .padding(16)
         .frame(minWidth: 220)
-    }
-
-    private var appVersionDisplay: String {
-        Bundle.main.appVersionDisplay
-    }
-}
-
-private extension Bundle {
-    var appVersionDisplay: String {
-        let version = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let build = object(forInfoDictionaryKey: "CFBundleVersion") as? String
-
-        switch (version, build) {
-        case let (version?, build?) where version != build:
-            return "\(version) (\(build))"
-        case let (version?, _):
-            return version
-        case let (_, build?):
-            return build
-        default:
-            return "Unknown"
-        }
     }
 }

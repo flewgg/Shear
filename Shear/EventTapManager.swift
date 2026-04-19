@@ -1,6 +1,7 @@
 import ApplicationServices
 import Carbon
 import Cocoa
+import Defaults
 
 final class EventTapManager {
     private enum ShortcutKey: Int {
@@ -18,7 +19,6 @@ final class EventTapManager {
     private var retryWorkItem: DispatchWorkItem?
     private let retryDelay: TimeInterval = 2
     private var hasLoggedMissingPermissions = false
-    private static let finderBundleIdentifier = "com.apple.finder"
 
     deinit {
         stop()
@@ -91,14 +91,13 @@ final class EventTapManager {
     }
 
     private func hasRequiredPermissions() -> Bool {
-        let inputMonitoringGranted = CGPreflightListenEventAccess()
-        let eventSynthesisGranted = CGPreflightPostEventAccess()
-        if !inputMonitoringGranted || !eventSynthesisGranted {
+        let permissionState = AppPermissionState.current()
+        if !permissionState.allRequiredGranted {
             if !hasLoggedMissingPermissions {
                 NSLog(
                     "Shear: waiting for permissions (Input Monitoring: %@, Accessibility/Post Events: %@)",
-                    inputMonitoringGranted ? "granted" : "missing",
-                    eventSynthesisGranted ? "granted" : "missing"
+                    permissionState.inputMonitoringGranted ? "granted" : "missing",
+                    permissionState.postEventAccessGranted ? "granted" : "missing"
                 )
                 hasLoggedMissingPermissions = true
             }
@@ -158,9 +157,10 @@ final class EventTapManager {
     }
 
     private func shouldHandleModifier(flags: CGEventFlags) -> Bool {
-        let (required, disallowed) = requiredFlags(for: currentModifier)
-        guard flags.contains(required) else { return false }
-        return flags.intersection(disallowed).isEmpty
+        currentModifiers.contains { modifier in
+            let (required, disallowed) = requiredFlags(for: modifier)
+            return flags.contains(required) && flags.intersection(disallowed).isEmpty
+        }
     }
 
     private func requiredFlags(for modifier: ShortcutModifier) -> (required: CGEventFlags, disallowed: CGEventFlags) {
@@ -183,13 +183,15 @@ final class EventTapManager {
         }
     }
 
-    private var currentModifier: ShortcutModifier {
-        let rawValue = UserDefaults.standard.string(forKey: ShortcutModifier.storageKey)
-        return ShortcutModifier(storedValue: rawValue)
+    private var currentModifiers: Set<ShortcutModifier> {
+        return ShortcutModifier.enabledModifiers(
+            modeStoredValue: Defaults[.shortcutModeRawValue],
+            multipleStoredValue: Defaults[.multipleShortcutRawValue]
+        )
     }
 
     private func isFinderFrontmost() -> Bool {
-        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == EventTapManager.finderBundleIdentifier
+        NSWorkspace.shared.frontmostApplication?.bundleIdentifier == "com.apple.finder"
     }
 
     private func postKeyCombo(_ keyCode: Int, flags: CGEventFlags) {

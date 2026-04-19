@@ -14,9 +14,9 @@ Or download [directly from GitHub](https://github.com/flewgg/Shear/releases/late
 
 ## How It Works
 - When Finder is frontmost:
-  - Your selected modifier shortcut + `X` triggers a copy
+  - Any enabled modifier shortcut + `X` triggers a copy
   - The next `⌘V` becomes **Move** (`⌘⌥V`)
-- Modifier options in Settings: `⌃` (Control), `⌘` (Command), and `Fn/Globe`.
+- Shortcut options in Settings: `⌃` (Control), `⌘` (Command), `Fn/Globe`, or `Multiple`.
 - `⌘` mode may interfere with Finder text cut in editing fields.
 - Normal `⌘C` and `⌘V` still behave as expected.
 
@@ -27,3 +27,7 @@ Or download [directly from GitHub](https://github.com/flewgg/Shear/releases/late
 ## Security
 
 The app is sandboxed and does not request file access entitlements.
+
+## Acknowledgements
+
+Shear uses [Sparkle](https://github.com/sparkle-project/Sparkle) for app updates and [Defaults](https://github.com/sindresorhus/Defaults) for preference storage. The About tab includes an acknowledgements window with both licenses.

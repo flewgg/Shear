@@ -6,10 +6,7 @@ struct PermissionsOnboardingView: View {
 
     let appDelegate: AppDelegate
 
-    @State private var permissions = AppDelegate.PermissionState(
-        inputMonitoringGranted: false,
-        postEventAccessGranted: false
-    )
+    @State private var permissions = AppPermissionState.empty
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -74,10 +71,8 @@ struct PermissionsOnboardingView: View {
     }
 
     private func refreshFromSystem() {
-        appDelegate.refreshPermissionState()
-        permissions = appDelegate.permissionState()
+        permissions = appDelegate.refreshPermissionState()
     }
-
 }
 
 private struct PermissionCard: View {
@@ -133,8 +128,6 @@ private struct PermissionCard: View {
     }
 }
 
-struct PermissionsOnboardingView_Previews: PreviewProvider {
-    static var previews: some View {
-        PermissionsOnboardingView(appDelegate: AppDelegate())
-    }
+#Preview {
+    PermissionsOnboardingView(appDelegate: AppDelegate())
 }

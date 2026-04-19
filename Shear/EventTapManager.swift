@@ -91,14 +91,13 @@ final class EventTapManager {
     }
 
     private func hasRequiredPermissions() -> Bool {
-        let inputMonitoringGranted = CGPreflightListenEventAccess()
-        let eventSynthesisGranted = CGPreflightPostEventAccess()
-        if !inputMonitoringGranted || !eventSynthesisGranted {
+        let permissionState = AppPermissionState.current()
+        if !permissionState.allRequiredGranted {
             if !hasLoggedMissingPermissions {
                 NSLog(
                     "Shear: waiting for permissions (Input Monitoring: %@, Accessibility/Post Events: %@)",
-                    inputMonitoringGranted ? "granted" : "missing",
-                    eventSynthesisGranted ? "granted" : "missing"
+                    permissionState.inputMonitoringGranted ? "granted" : "missing",
+                    permissionState.postEventAccessGranted ? "granted" : "missing"
                 )
                 hasLoggedMissingPermissions = true
             }

@@ -6,10 +6,7 @@ struct PermissionsOnboardingView: View {
 
     let appDelegate: AppDelegate
 
-    @State private var permissions = AppDelegate.PermissionState(
-        inputMonitoringGranted: false,
-        postEventAccessGranted: false
-    )
+    @State private var permissions = AppPermissionState.empty
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {

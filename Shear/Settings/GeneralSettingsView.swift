@@ -6,11 +6,9 @@ struct GeneralSettingsView: View {
     @Default(.shortcutModeRawValue) private var shortcutModeRawValue
     @Default(.multipleShortcutRawValue) private var multipleShortcutRawValue
     @State private var launchAtLogin = false
+    @State private var launchAtLoginErrorMessage: String?
     @State private var hideDockIcon = false
-    @State private var permissions = AppDelegate.PermissionState(
-        inputMonitoringGranted: false,
-        postEventAccessGranted: false
-    )
+    @State private var permissions = AppPermissionState.empty
 
     private let appDelegate: AppDelegate
 
@@ -60,7 +58,7 @@ struct GeneralSettingsView: View {
             }
 
             Section {
-                ForEach([AppPermission.postEvents, .inputMonitoring], id: \.self) { permission in
+                ForEach(AppPermission.settingsDisplayOrder, id: \.self) { permission in
                     permissionRow(for: permission)
                 }
             } header: {
@@ -73,6 +71,13 @@ struct GeneralSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .alert("Unable to Change Launch at Startup", isPresented: launchAtLoginErrorIsPresented) {
+            Button("OK", role: .cancel) {
+                launchAtLoginErrorMessage = nil
+            }
+        } message: {
+            Text(launchAtLoginErrorMessage ?? "An unknown error occurred.")
+        }
         .onAppear(perform: refreshFromSystem)
         .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .active {
@@ -82,7 +87,7 @@ struct GeneralSettingsView: View {
     }
 
     private var shortcutMode: ShortcutMode {
-        ShortcutMode(storedValue: shortcutModeRawValue)
+        shortcutPreferences.mode
     }
 
     private var shortcutModeBinding: Binding<ShortcutMode> {
@@ -93,14 +98,14 @@ struct GeneralSettingsView: View {
     }
 
     private var multipleShortcutModifiers: Set<ShortcutModifier> {
-        if shortcutMode == .multiple && shortcutModeRawValue != ShortcutMode.multiple.rawValue {
-            let legacyModifiers = ShortcutModifier.modifiers(storedValue: shortcutModeRawValue)
-            if !legacyModifiers.isEmpty {
-                return legacyModifiers
-            }
-        }
+        shortcutPreferences.multipleSelection
+    }
 
-        return ShortcutModifier.modifiers(storedValue: multipleShortcutRawValue)
+    private var shortcutPreferences: ShortcutPreferences {
+        ShortcutPreferences(
+            modeStoredValue: shortcutModeRawValue,
+            multipleStoredValue: multipleShortcutRawValue
+        )
     }
 
     private func shortcutModifierBinding(for modifier: ShortcutModifier) -> Binding<Bool> {
@@ -125,8 +130,24 @@ struct GeneralSettingsView: View {
         Binding(
             get: { launchAtLogin },
             set: { enabled in
-                _ = appDelegate.setLaunchAtLogin(enabled)
+                do {
+                    try appDelegate.setLaunchAtLogin(enabled)
+                } catch {
+                    launchAtLoginErrorMessage = error.localizedDescription
+                }
+
                 launchAtLogin = appDelegate.isLaunchAtLoginEnabled()
+            }
+        )
+    }
+
+    private var launchAtLoginErrorIsPresented: Binding<Bool> {
+        Binding(
+            get: { launchAtLoginErrorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    launchAtLoginErrorMessage = nil
+                }
             }
         )
     }
@@ -148,7 +169,9 @@ struct GeneralSettingsView: View {
     }
 
     private func permissionRow(for permission: AppPermission) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        let isGranted = permission.isGranted(in: permissions)
+
+        return HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(permission.title)
 
@@ -160,10 +183,10 @@ struct GeneralSettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .layoutPriority(1)
 
-            Text(permission.isGranted(in: permissions) ? "Granted" : "Not Granted")
+            Text(isGranted ? "Granted" : "Not Granted")
                 .foregroundStyle(
                     Color(
-                        nsColor: permission.isGranted(in: permissions) ? .systemGreen : .systemRed
+                        nsColor: isGranted ? .systemGreen : .systemRed
                     )
                 )
                 .lineLimit(1)

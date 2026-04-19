@@ -1,16 +1,27 @@
-enum AppWindowID {
-    static let permissions = "permissions"
-    static let settings = "settings"
-    static let info = "info"
-    static let acknowledgements = "acknowledgements"
+import AppKit
+import SwiftUI
+
+enum AppWindowID: String {
+    case permissions
+    case settings
+    case info
+    case acknowledgements
+}
+
+extension OpenWindowAction {
+    @MainActor
+    func openAndActivate(id: AppWindowID) {
+        callAsFunction(id: id.rawValue)
+        NSApplication.shared.activate(ignoringOtherApps: true)
+    }
 }
 
 @MainActor
 enum AppWindowRouter {
-    private static var openWindowHandler: ((String) -> Void)?
-    private static var pendingWindowID: String?
+    private static var openWindowHandler: ((AppWindowID) -> Void)?
+    private static var pendingWindowID: AppWindowID?
 
-    static func install(handler: @escaping (String) -> Void) {
+    static func install(handler: @escaping (AppWindowID) -> Void) {
         openWindowHandler = handler
         if let pendingID = pendingWindowID {
             pendingWindowID = nil
@@ -18,7 +29,13 @@ enum AppWindowRouter {
         }
     }
 
-    static func open(id: String) {
+    static func install(openWindow: OpenWindowAction) {
+        install { id in
+            openWindow.openAndActivate(id: id)
+        }
+    }
+
+    static func open(_ id: AppWindowID) {
         if let openWindowHandler {
             openWindowHandler(id)
         } else {

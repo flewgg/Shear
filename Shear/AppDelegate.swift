@@ -5,12 +5,18 @@ import ServiceManagement
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    struct PermissionState {
-        let inputMonitoringGranted: Bool
-        let postEventAccessGranted: Bool
+    enum LaunchAtLoginError: LocalizedError {
+        case statusMismatch(requestedEnabled: Bool)
 
-        var allRequiredGranted: Bool {
-            inputMonitoringGranted && postEventAccessGranted
+        var errorDescription: String? {
+            switch self {
+            case let .statusMismatch(requestedEnabled):
+                if requestedEnabled {
+                    return "macOS did not enable launch at startup after the change was requested."
+                }
+
+                return "macOS did not disable launch at startup after the change was requested."
+            }
         }
     }
 
@@ -41,7 +47,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             Defaults[.hasShownPermissionsOnboarding] = true
             if !currentPermissionState.allRequiredGranted {
                 DispatchQueue.main.async {
-                    AppWindowRouter.open(id: AppWindowID.permissions)
+                    AppWindowRouter.open(AppWindowID.permissions)
                 }
             }
         }
@@ -54,24 +60,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func hasInputMonitoringAccess() -> Bool {
-        CGPreflightListenEventAccess()
-    }
-
-    func hasPostEventAccess() -> Bool {
-        CGPreflightPostEventAccess()
-    }
-
-    func permissionState() -> PermissionState {
-        PermissionState(
-            inputMonitoringGranted: hasInputMonitoringAccess(),
-            postEventAccessGranted: hasPostEventAccess()
-        )
-    }
-
     @discardableResult
-    func refreshPermissionState() -> PermissionState {
-        let state = permissionState()
+    func refreshPermissionState() -> AppPermissionState {
+        let state = AppPermissionState.current()
 
         if state.allRequiredGranted {
             eventTapManager.start()
@@ -87,18 +78,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         openSystemSettings(permission.settingsURL)
     }
 
-    @discardableResult
-    func setLaunchAtLogin(_ enabled: Bool) -> Bool {
-        do {
-            if enabled {
-                try SMAppService.mainApp.register()
-            } else {
-                try SMAppService.mainApp.unregister()
-            }
-            return isLaunchAtLoginEnabled() == enabled
-        } catch {
-            NSLog("Shear: failed to update launch at login: %@", error.localizedDescription)
-            return false
+    func setLaunchAtLogin(_ enabled: Bool) throws {
+        if enabled {
+            try SMAppService.mainApp.register()
+        } else {
+            try SMAppService.mainApp.unregister()
+        }
+
+        guard isLaunchAtLoginEnabled() == enabled else {
+            throw LaunchAtLoginError.statusMismatch(requestedEnabled: enabled)
         }
     }
 

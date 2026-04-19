@@ -19,7 +19,7 @@ struct SettingsView: View {
                 canCheckForUpdates: appDelegate.canCheckForUpdates,
                 onCheckForUpdates: appDelegate.checkForUpdates,
                 onOpenAcknowledgements: {
-                    openWindow(id: AppWindowID.acknowledgements)
+                    openWindow.openAndActivate(id: .acknowledgements)
                 }
             )
             .tabItem {

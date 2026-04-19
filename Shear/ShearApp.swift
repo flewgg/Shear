@@ -12,38 +12,33 @@ struct ShearApp: App {
             MenuBarLabel()
         }
 
-        Window("Permissions Required", id: AppWindowID.permissions) {
+        Window("Permissions Required", id: AppWindowID.permissions.rawValue) {
             PermissionsOnboardingView(appDelegate: appDelegate)
         }
         .defaultSize(width: 520, height: 350)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
 
-        Window("Settings", id: AppWindowID.settings) {
+        Window("Settings", id: AppWindowID.settings.rawValue) {
             SettingsView(appDelegate: appDelegate)
         }
         .defaultSize(width: 520, height: 470)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
 
-        Window("Info", id: AppWindowID.info) {
+        Window("Info", id: AppWindowID.info.rawValue) {
             InfoPopupView()
         }
         .defaultSize(width: 320, height: 220)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
 
-        Window("Acknowledgements", id: AppWindowID.acknowledgements) {
+        Window("Acknowledgements", id: AppWindowID.acknowledgements.rawValue) {
             AcknowledgementsWindowView()
         }
         .windowToolbarStyle(.unified)
         .defaultSize(width: 720, height: 640)
     }
-}
-
-private func openAndActivateWindow(_ openWindow: OpenWindowAction, id: String) {
-    openWindow(id: id)
-    NSApplication.shared.activate(ignoringOtherApps: true)
 }
 
 private struct MenuBarLabel: View {
@@ -53,9 +48,7 @@ private struct MenuBarLabel: View {
         Image(systemName: "scissors.badge.ellipsis")
             .imageScale(.medium)
             .onAppear {
-                AppWindowRouter.install { id in
-                    openAndActivateWindow(openWindow, id: id)
-                }
+                AppWindowRouter.install(openWindow: openWindow)
             }
     }
 }
@@ -85,9 +78,9 @@ private struct MenuBarContent: View {
         }
     }
 
-    private func windowButton(title: String, systemImage: String, id: String) -> some View {
+    private func windowButton(title: String, systemImage: String, id: AppWindowID) -> some View {
         Button {
-            openAndActivateWindow(openWindow, id: id)
+            openWindow.openAndActivate(id: id)
         } label: {
             Label(title, systemImage: systemImage)
         }

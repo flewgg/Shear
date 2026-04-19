@@ -1,8 +1,32 @@
+import ApplicationServices
 import Foundation
+
+struct AppPermissionState: Equatable {
+    let inputMonitoringGranted: Bool
+    let postEventAccessGranted: Bool
+
+    static let empty = Self(
+        inputMonitoringGranted: false,
+        postEventAccessGranted: false
+    )
+
+    static func current() -> Self {
+        Self(
+            inputMonitoringGranted: CGPreflightListenEventAccess(),
+            postEventAccessGranted: CGPreflightPostEventAccess()
+        )
+    }
+
+    var allRequiredGranted: Bool {
+        inputMonitoringGranted && postEventAccessGranted
+    }
+}
 
 enum AppPermission: CaseIterable, Hashable {
     case inputMonitoring
     case postEvents
+
+    static let settingsDisplayOrder: [Self] = [.postEvents, .inputMonitoring]
 
     var title: String {
         switch self {
@@ -49,7 +73,7 @@ enum AppPermission: CaseIterable, Hashable {
         }
     }
 
-    func isGranted(in state: AppDelegate.PermissionState) -> Bool {
+    func isGranted(in state: AppPermissionState) -> Bool {
         switch self {
         case .inputMonitoring:
             return state.inputMonitoringGranted

@@ -17,14 +17,6 @@ enum ShortcutModifier: String, CaseIterable {
         }
     }
 
-    init(storedValue: String?) {
-        guard let storedValue, let modifier = ShortcutModifier(rawValue: storedValue) else {
-            self = .control
-            return
-        }
-        self = modifier
-    }
-
     static func modifiers(storedValue: String?) -> Set<ShortcutModifier> {
         guard let storedValue, !storedValue.isEmpty else {
             return []
@@ -41,27 +33,10 @@ enum ShortcutModifier: String, CaseIterable {
         modeStoredValue: String?,
         multipleStoredValue: String?
     ) -> Set<ShortcutModifier> {
-        switch ShortcutMode(storedValue: modeStoredValue) {
-        case .control:
-            return [.control]
-        case .command:
-            return [.command]
-        case .function:
-            return [.function]
-        case .multiple:
-            if modeStoredValue != ShortcutMode.multiple.rawValue {
-                let legacyModifiers = modifiers(storedValue: modeStoredValue)
-                if !legacyModifiers.isEmpty {
-                    return legacyModifiers
-                }
-            }
-
-            guard multipleStoredValue != nil else {
-                return defaultMultipleModifiers
-            }
-
-            return modifiers(storedValue: multipleStoredValue)
-        }
+        ShortcutPreferences(
+            modeStoredValue: modeStoredValue,
+            multipleStoredValue: multipleStoredValue
+        ).enabledModifiers
     }
 
     static func storageValue(for modifiers: Set<ShortcutModifier>) -> String {
@@ -69,6 +44,50 @@ enum ShortcutModifier: String, CaseIterable {
             .filter { modifiers.contains($0) }
             .map(\.rawValue)
             .joined(separator: ",")
+    }
+}
+
+struct ShortcutPreferences {
+    let modeStoredValue: String?
+    let multipleStoredValue: String?
+
+    var mode: ShortcutMode {
+        ShortcutMode(storedValue: modeStoredValue)
+    }
+
+    var multipleSelection: Set<ShortcutModifier> {
+        let legacySelection = legacyMultipleSelection
+        if !legacySelection.isEmpty {
+            return legacySelection
+        }
+
+        return ShortcutModifier.modifiers(storedValue: multipleStoredValue)
+    }
+
+    var enabledModifiers: Set<ShortcutModifier> {
+        switch mode {
+        case .control:
+            return [.control]
+        case .command:
+            return [.command]
+        case .function:
+            return [.function]
+        case .multiple:
+            if multipleStoredValue == nil && multipleSelection.isEmpty {
+                return ShortcutModifier.defaultMultipleModifiers
+            }
+
+            return multipleSelection
+        }
+    }
+
+    private var legacyMultipleSelection: Set<ShortcutModifier> {
+        guard mode == .multiple,
+              modeStoredValue != ShortcutMode.multiple.rawValue else {
+            return []
+        }
+
+        return ShortcutModifier.modifiers(storedValue: modeStoredValue)
     }
 }
 

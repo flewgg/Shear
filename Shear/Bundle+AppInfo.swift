@@ -1,27 +1,38 @@
 import Foundation
 
 extension Bundle {
+    private enum InfoKey: String {
+        case displayName = "CFBundleDisplayName"
+        case bundleName = "CFBundleName"
+        case shortVersion = "CFBundleShortVersionString"
+        case buildNumber = "CFBundleVersion"
+        case copyright = "NSHumanReadableCopyright"
+    }
+
     var appName: String {
-        infoDictionary?["CFBundleDisplayName"] as? String
-            ?? infoDictionary?["CFBundleName"] as? String
+        stringValue(for: .displayName)
+            ?? stringValue(for: .bundleName)
             ?? "Unknown"
     }
 
     var appVersion: String {
-        infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        stringValue(for: .shortVersion) ?? "Unknown"
     }
 
     var buildNumber: String {
-        infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
+        stringValue(for: .buildNumber) ?? "Unknown"
     }
 
     var appVersionDisplay: String {
-        switch (appVersion, buildNumber) {
-        case let (version, build) where version != "Unknown" && build != "Unknown" && version != build:
+        let version = stringValue(for: .shortVersion)
+        let build = stringValue(for: .buildNumber)
+
+        switch (version, build) {
+        case let (version?, build?) where version != build:
             return "\(version) (\(build))"
-        case let (version, _) where version != "Unknown":
+        case let (version?, _):
             return version
-        case let (_, build) where build != "Unknown":
+        case let (_, build?):
             return build
         default:
             return "Unknown"
@@ -29,7 +40,11 @@ extension Bundle {
     }
 
     var copyright: String {
-        object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String
+        stringValue(for: .copyright)
             ?? "© \(Calendar.current.component(.year, from: Date())) flew. All rights reserved."
+    }
+
+    private func stringValue(for key: InfoKey) -> String? {
+        object(forInfoDictionaryKey: key.rawValue) as? String
     }
 }

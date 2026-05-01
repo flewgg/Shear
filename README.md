@@ -1,33 +1,20 @@
-# Shear
+# We’re moving to Codeberg
 
-Shear is a tiny menubar app for macOS that enables **Cut (⌘X)** and **Paste (⌘V)** in Finder, similar to Windows/Linux.
+Hey everyone,
 
-## Install
+We’re currently in the middle of migrating this project from GitHub to Codeberg.
 
-Homebrew:
-```bash
-brew install --cask flewgg/tap/shear
-```
+This GitHub repository is now **read-only** and will remain available as a mirror. Active development is moving to Codeberg, and future releases will **not** be published on GitHub. Releases will be made on Codeberg instead.
 
-Or download [directly from GitHub](https://github.com/flewgg/Shear/releases/latest).
+Please use the Codeberg repo for:
 
+- Releases
+- Issues
+- Pull requests
+- Future updates
 
-## How It Works
-- When Finder is frontmost:
-  - Any enabled modifier shortcut + `X` triggers a copy
-  - The next `⌘V` becomes **Move** (`⌘⌥V`)
-- Shortcut options in Settings: `⌃` (Control), `⌘` (Command), `Fn/Globe`, or `Multiple`.
-- `⌘` mode may interfere with Finder text cut in editing fields.
-- Normal `⌘C` and `⌘V` still behave as expected.
+New home:
 
-## Permissions
-- **Input Monitoring** is required so the app can detect your shortcut while Finder is active.
-- **Accessibility** is required so the app can send Finder's move-paste shortcut.
+https://codeberg.org/flew/Shear
 
-## Security
-
-The app is sandboxed and does not request file access entitlements.
-
-## Acknowledgements
-
-Shear uses [Sparkle](https://github.com/sparkle-project/Sparkle) for app updates and [Defaults](https://github.com/sindresorhus/Defaults) for preference storage. The About tab includes an acknowledgements window with both licenses.
+Thanks for your support.
